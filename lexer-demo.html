@@ -957,7 +957,83 @@ body {
 }
 .btn-saved svg { width: 13px; height: 13px; }
 
+/* ══════════════════════════════════════════════════
+   Mobile responsive overrides
+   The layout above is fixed-width (240px chat-nav +
+   54px icon rail = 294px of chrome before any actual
+   content), which is why it overflows on narrow
+   screens. Below 640px we drop the "Recent chats"
+   column entirely and shrink spacing/type so the
+   actual chat conversation is what mobile visitors see.
+   ══════════════════════════════════════════════════ */
+@media (max-width: 640px) {
+  body {
+    padding: 24px 14px;
+  }
 
+  .section-title {
+    font-size: 22px;
+  }
+
+  .section-sub {
+    font-size: 14px;
+    padding: 0 8px;
+    margin-bottom: 24px;
+  }
+
+  .cat-tabs {
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+
+  .cat-tab {
+    font-size: 13px;
+    padding: 7px 14px;
+  }
+
+  /* Collapse the outer grid to a single column and drop
+     the fixed 240px "Recent chats" rail so nothing has
+     a fixed width wider than the viewport. */
+  .demo-stage {
+    display: block;
+    border-radius: 12px;
+  }
+
+  .chat-nav {
+    display: none;
+  }
+
+  .lexi-window {
+    height: 560px;
+  }
+
+  .lexi-topbar {
+    padding: 10px 14px;
+  }
+
+  .lexi-body {
+    padding: 16px 16px 12px;
+    gap: 16px;
+  }
+
+  .lexi-user-bubble {
+    max-width: 88%;
+    font-size: 13.5px;
+    padding: 10px 14px;
+  }
+
+  .lexi-response-body,
+  .lexi-section-title,
+  .lexi-bullets {
+    padding-left: 0;
+    margin-left: 0;
+  }
+
+  .lexi-empty {
+    max-width: 260px;
+    padding: 24px 12px;
+  }
+}
 </style>
 </head>
 <body>
