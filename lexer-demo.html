@@ -1176,6 +1176,215 @@ body {
   }
 }
 
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ADDED — ENGAGEMENT LAYER
+   Everything from here to the end of the stylesheet is new. Nothing above
+   this line was changed.
+
+     1. .demo-prompts       question pills above the panel
+     2. .chat-nav-hint      "click any chat" hint under the sidebar chat list
+     3. .chat-nav-cta       teal Book a demo button under that hint
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Question pills ───────────────────────────────────────────────────── */
+.demo-prompts {
+  margin: 0 0 22px;
+  text-align: center;
+  /* Breathing room when the row is scrolled to the top of the viewport */
+  scroll-margin-top: 24px;
+}
+.demo-prompts-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+.demo-prompt {
+  font-family: 'Rubik', sans-serif;
+  /* 13.5/18 keeps all five on one line inside the /demo hero column, which is
+     ~1120px at desktop — not the full viewport width. */
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1;
+  color: #FFFFFF;
+  background: var(--teal);
+  border: none;
+  border-radius: 999px;
+  padding: 12px 18px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+}
+/* Matches the site's button logic: teal -> bright teal, text unchanged */
+.demo-prompt:hover { background: var(--bright-teal); }
+/* Selected pill goes white so it reads as "you are here" against the navy */
+.demo-prompt.active {
+  background: #FFFFFF;
+  color: var(--dark-grey);
+}
+.demo-prompt:focus-visible {
+  outline: 2px solid var(--bright-teal);
+  outline-offset: 3px;
+}
+
+/* ── 2. Sidebar hint ─────────────────────────────────────────────────────── */
+.chat-nav-hint {
+  margin: 14px 12px 0;
+  padding: 11px 12px 0;
+  border-top: 1px solid var(--fawn);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--dark-fawn);
+}
+.chat-nav-hint-arrow {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.chat-nav-hint-arrow svg {
+  display: block;
+  width: 14px;
+  height: 14px;
+  color: var(--teal);
+  animation: hint-nudge 2.4s ease-in-out infinite;
+}
+@keyframes hint-nudge {
+  0%, 100% { transform: translateY(1px); }
+  50%      { transform: translateY(-3px); }
+}
+
+/* ── 3. Sidebar Book a demo CTA ──────────────────────────────────────────── */
+.chat-nav-cta {
+  margin: 12px 12px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Rubik', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #FFFFFF;
+  background: var(--teal);
+  border: none;
+  border-radius: 999px;
+  padding: 11px 16px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.chat-nav-cta:hover { background: var(--dark-teal); }
+.chat-nav-cta:focus-visible {
+  outline: 2px solid var(--dark-teal);
+  outline-offset: 2px;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+/* Pill row: one scrollable line rather than a wrap that adds a whole row of
+   height. Set at 991 (Webflow's Tablet breakpoint) not 900, because the /demo
+   hero column is ~911px wide at a 991px viewport — the pills wrapped there. */
+@media (max-width: 991px) {
+  .demo-prompts-row {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .demo-prompts-row::-webkit-scrollbar { display: none; }
+}
+
+@media (max-width: 900px) {
+  .demo-prompts { margin-bottom: 18px; }
+  .demo-prompts-row {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .demo-prompts-row::-webkit-scrollbar { display: none; }
+  .demo-prompt { font-size: 13px; padding: 11px 17px; }
+
+  /* The sidebar becomes a horizontal strip below 900px, so the hint's
+     up-arrow and the CTA both lose their meaning. Hidden, same as
+     .chat-nav-new / .chat-nav-links / .chat-nav-label already are. */
+  .chat-nav-hint,
+  .chat-nav-cta { display: none; }
+
+  /* DECISION FLAG — see handover note.
+     Below 900px the sidebar chat strip renders the same five titles as the
+     pills directly above it. Hiding it removes the duplicate and gives the
+     chat more height. Delete this one rule to keep both. */
+  .chat-nav-list { display: none; }
+}
+
+/* ── Phone: stack the pills ──────────────────────────────────────────────
+   Below a 560px column the horizontal row only ever showed about one and a
+   half pills, which defeats the point — the pills exist so all five options
+   are visible without hunting. Full-width stack instead: every label sets on
+   one line, tap targets are the full column, nothing is hidden off-screen.
+
+   ALTERNATIVE — two columns. 76px shorter, but "Increase 2nd order
+   conversion" cannot fit a ~151px column at any readable size, so the first
+   row always wraps to two lines while the second doesn't. To use it, swap
+   the .demo-prompts-row and .demo-prompt rules below for:
+
+     .demo-prompts-row {
+       display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+       overflow: visible; align-items: stretch;
+     }
+     .demo-prompt {
+       white-space: normal; text-align: center; font-size: 12.5px;
+       padding: 10px 12px; line-height: 1.3;
+       display: flex; align-items: center; justify-content: center;
+     }
+     .demo-prompt:last-child { grid-column: 1 / -1; }
+   ─────────────────────────────────────────────────────────────────────── */
+@media (max-width: 560px) {
+  .demo-prompts { margin-bottom: 14px; }
+  .demo-prompts-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    /* Cancels the scroll behaviour inherited from the 991 and 900 blocks */
+    overflow: visible;
+    padding-bottom: 0;
+  }
+  .demo-prompt {
+    white-space: normal;
+    text-align: center;
+    font-size: 13px;
+    padding: 12px 14px;
+  }
+}
+
+/* ── Mockup toast (standalone preview only) ──────────────────────────────── */
+.mock-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%) translateY(8px);
+  background: var(--dark-grey);
+  color: #FFFFFF;
+  font-size: 13px;
+  line-height: 1.45;
+  padding: 12px 18px;
+  border-radius: 10px;
+  box-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.6);
+  max-width: 420px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 999;
+}
+.mock-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
 </style>
 <script type="text/javascript">
     (function(c,l,a,r,i,t,y){
@@ -1188,6 +1397,12 @@ body {
 <body>
 
 <div class="demo-section" id="demo">
+  <!-- ── ADDED: question pills. Populated from CHATS in JS so the pills and
+       the sidebar list can never drift apart. ─────────────────────────── -->
+  <div class="demo-prompts" id="demo-prompts">
+    <div class="demo-prompts-row" id="demo-prompts-row"></div>
+  </div>
+
   <div class="demo-stage">
     <!-- Previous chats nav -->
     <div class="chat-nav">
@@ -1220,6 +1435,16 @@ body {
 
       <p class="chat-nav-label">Recent chats</p>
       <div class="chat-nav-list" id="chat-nav-list"></div>
+
+      <!-- ── ADDED: interactivity hint + booking CTA ──────────────────── -->
+      <div class="chat-nav-hint">
+        <span class="chat-nav-hint-arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+        </span>
+        <span>Click any chat to load a different answer</span>
+      </div>
+
+      <button type="button" class="chat-nav-cta" id="demo-embed-sidebar-cta">Book a demo</button>
     </div>
 
     <!-- Lexi window -->
@@ -4016,6 +4241,132 @@ function playConversation(question, ucLabel) {
 // Init
 renderChatNav();
 openChat(0);
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ADDED — ENGAGEMENT LAYER
+   Everything below is additive. Nothing above this line was changed.
+
+     1. Builds the question pills from CHATS.
+     2. Pill click  -> loads that chat, keeps the sidebar in step, and asks
+        the parent page to scroll the demo into view.
+     3. Sidebar CTA -> asks the parent page to open the booking modal that
+        already exists on /demo.
+
+   The embed is cross-origin (GitHub Pages inside lexer.io), so it cannot
+   scroll the parent or open the parent's modal directly. Both go over
+   postMessage.
+
+   HOW THE MODAL ACTUALLY OPENS ON /demo — verified against the live page.
+   The two existing CTAs, #demo-page-hero-cta and #demo-page-secondary-cta,
+   both carry the attribute data-demo-modal-trigger="true". The open logic
+   lives inside the modal's own HTML embed and listens for clicks on that
+   attribute. So the parent listener just fires a click on an existing
+   trigger, which replays the identical code path rather than duplicating it.
+   Register this on /demo (footer):
+
+     window.addEventListener('message', function (e) {
+       if (e.origin !== 'https://lexer-marketing.github.io') return;
+       var d = e.data;
+       if (!d || d.source !== 'lexer-demo') return;
+
+       if (d.type === 'book-demo') {
+         var t = document.querySelector('[data-demo-modal-trigger]');
+         if (t) t.click();
+       }
+
+       if (d.type === 'scroll-into-view') {
+         var f = document.querySelector('iframe[src*="lexer-demo"]');
+         if (!f) return;
+         window.scrollTo({
+           top: window.scrollY + f.getBoundingClientRect().top - 140,
+           behavior: 'smooth'
+         });
+       }
+     });
+   ══════════════════════════════════════════════════════════════════════════ */
+(function () {
+  var PARENT_ORIGIN = 'https://www.lexer.io';
+  var inFrame = window.parent !== window;
+  var row = document.getElementById('demo-prompts-row');
+  var cta = document.getElementById('demo-embed-sidebar-cta');
+
+  function send(payload) {
+    if (!inFrame) return false;
+    payload.source = 'lexer-demo';
+    try { window.parent.postMessage(payload, PARENT_ORIGIN); } catch (e) {}
+    return true;
+  }
+
+  function syncPills(i) {
+    if (!row) return;
+    var pills = row.querySelectorAll('.demo-prompt');
+    for (var j = 0; j < pills.length; j++) {
+      pills[j].classList.toggle('active', j === i);
+    }
+  }
+
+  function revealDemo() {
+    // Production: the parent listens and scrolls the iframe wrapper into view.
+    send({ type: 'scroll-into-view' });
+    // Standalone (this mockup): scroll locally. No-op inside the iframe.
+    var anchor = document.getElementById('demo-prompts');
+    if (anchor && anchor.scrollIntoView) {
+      anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  // Wrap openChat so pills stay in step whichever control was used.
+  var nativeOpenChat = openChat;
+  var nextTrigger = 'sidebar-chat';
+  openChat = function (i) {
+    nativeOpenChat(i);
+    syncPills(i);
+    send({
+      type: 'chat-selected',
+      trigger: nextTrigger,
+      chat_index: i,
+      chat_title: (CHATS[i] && CHATS[i].title) || ''
+    });
+    nextTrigger = 'sidebar-chat';
+  };
+
+  // Build the pills.
+  CHATS.forEach(function (chat, i) {
+    var pill = document.createElement('button');
+    pill.type = 'button';
+    pill.className = 'demo-prompt' + (i === activeChat ? ' active' : '');
+    pill.id = 'demo-prompt-' + (i + 1);
+    pill.textContent = chat.title;
+    pill.addEventListener('click', function () {
+      nextTrigger = 'prompt-pill';
+      openChat(i);
+      revealDemo();
+    });
+    row.appendChild(pill);
+  });
+
+  // Sidebar Book a demo.
+  cta.addEventListener('click', function () {
+    send({ type: 'book-demo', trigger: 'demo-embed-sidebar-cta' });
+    if (!inFrame) {
+      mockToast('In production this posts book-demo to the parent, which clicks a [data-demo-modal-trigger] element \u2014 the same path #demo-page-hero-cta and #demo-page-secondary-cta already use.');
+    }
+  });
+
+  // Standalone-only helper so the mockup explains itself.
+  var toastEl, toastTimer;
+  function mockToast(msg) {
+    if (!toastEl) {
+      toastEl = document.createElement('div');
+      toastEl.className = 'mock-toast';
+      document.body.appendChild(toastEl);
+    }
+    toastEl.textContent = msg;
+    requestAnimationFrame(function () { toastEl.classList.add('show'); });
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 4200);
+  }
+})();
 
 </script>
 
