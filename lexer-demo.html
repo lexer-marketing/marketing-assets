@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1184,7 +1185,6 @@ body {
 
      1. .demo-prompts       question pills above the panel
      2. .chat-nav-hint      "click any chat" hint under the sidebar chat list
-     3. .chat-nav-cta       teal Book a demo button under that hint
    ══════════════════════════════════════════════════════════════════════════ */
 
 /* ── 1. Question pills ───────────────────────────────────────────────────── */
@@ -1198,20 +1198,22 @@ body {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 9px;
+  gap: 8px;
 }
 .demo-prompt {
   font-family: 'Rubik', sans-serif;
-  /* 13.5/18 keeps all five on one line inside the /demo hero column, which is
-     ~1120px at desktop — not the full viewport width. */
-  font-size: 13.5px;
+  /* Sized against real Rubik metrics, not a fallback face. The /demo hero
+     column is ~1120px, less 48px body padding each side = 1024px available.
+     At 13.5px/18px the row measured 1035px and wrapped to two lines; at
+     13px/16px it measures ~975px, leaving ~50px of headroom. */
+  font-size: 13px;
   font-weight: 500;
   line-height: 1;
   color: #FFFFFF;
   background: var(--teal);
   border: none;
   border-radius: 999px;
-  padding: 12px 18px;
+  padding: 12px 16px;
   cursor: pointer;
   white-space: nowrap;
   transition: background 0.15s, color 0.15s;
@@ -1256,29 +1258,6 @@ body {
   50%      { transform: translateY(-3px); }
 }
 
-/* ── 3. Sidebar Book a demo CTA ──────────────────────────────────────────── */
-.chat-nav-cta {
-  margin: 12px 12px 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Rubik', sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  color: #FFFFFF;
-  background: var(--teal);
-  border: none;
-  border-radius: 999px;
-  padding: 11px 16px;
-  cursor: pointer;
-  text-decoration: none;
-  transition: background 0.15s;
-}
-.chat-nav-cta:hover { background: var(--dark-teal); }
-.chat-nav-cta:focus-visible {
-  outline: 2px solid var(--dark-teal);
-  outline-offset: 2px;
-}
 
 /* ── Responsive ──────────────────────────────────────────────────────────── */
 /* Pill row: one scrollable line rather than a wrap that adds a whole row of
@@ -1312,10 +1291,9 @@ body {
   .demo-prompt { font-size: 13px; padding: 11px 17px; }
 
   /* The sidebar becomes a horizontal strip below 900px, so the hint's
-     up-arrow and the CTA both lose their meaning. Hidden, same as
-     .chat-nav-new / .chat-nav-links / .chat-nav-label already are. */
-  .chat-nav-hint,
-  .chat-nav-cta { display: none; }
+     up-arrow loses its meaning. Hidden, same as .chat-nav-new /
+     .chat-nav-links / .chat-nav-label already are. */
+  .chat-nav-hint { display: none; }
 
   /* DECISION FLAG — see handover note.
      Below 900px the sidebar chat strip renders the same five titles as the
@@ -1364,26 +1342,15 @@ body {
   }
 }
 
-/* ── Mockup toast (standalone preview only) ──────────────────────────────── */
-.mock-toast {
-  position: fixed;
-  left: 50%;
-  bottom: 24px;
-  transform: translateX(-50%) translateY(8px);
-  background: var(--dark-grey);
-  color: #FFFFFF;
-  font-size: 13px;
-  line-height: 1.45;
-  padding: 12px 18px;
-  border-radius: 10px;
-  box-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.6);
-  max-width: 420px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s, transform 0.2s;
-  z-index: 999;
-}
-.mock-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+
+/* ── Trim the space under the panel ──────────────────────────────────────
+   The base body padding is symmetrical (48/24/12). With the pills sitting
+   above the panel the top spacing is doing work, but the bottom is just
+   dead room inside the iframe. Halved at each breakpoint. */
+body { padding-bottom: 24px; }
+@media (max-width: 900px) { body { padding-bottom: 14px; } }
+@media (max-width: 560px) { body { padding-bottom: 8px; } }
 
 </style>
 <script type="text/javascript">
@@ -1444,7 +1411,6 @@ body {
         <span>Click any chat to load a different answer</span>
       </div>
 
-      <button type="button" class="chat-nav-cta" id="demo-embed-sidebar-cta">Book a demo</button>
     </div>
 
     <!-- Lexi window -->
@@ -4247,48 +4213,35 @@ openChat(0);
    Everything below is additive. Nothing above this line was changed.
 
      1. Builds the question pills from CHATS.
-     2. Pill click  -> loads that chat, keeps the sidebar in step, and asks
+     2. Pill click -> loads that chat, keeps the sidebar in step, and asks
         the parent page to scroll the demo into view.
-     3. Sidebar CTA -> asks the parent page to open the booking modal that
-        already exists on /demo.
 
    The embed is cross-origin (GitHub Pages inside lexer.io), so it cannot
-   scroll the parent or open the parent's modal directly. Both go over
-   postMessage.
+   scroll the parent itself. That goes over postMessage, and the listener
+   lives in the /demo demo-frame embed (the one holding this iframe).
 
-   HOW THE MODAL ACTUALLY OPENS ON /demo — verified against the live page.
-   The two existing CTAs, #demo-page-hero-cta and #demo-page-secondary-cta,
-   both carry the attribute data-demo-modal-trigger="true". The open logic
-   lives inside the modal's own HTML embed and listens for clicks on that
-   attribute. So the parent listener just fires a click on an existing
-   trigger, which replays the identical code path rather than duplicating it.
-   Register this on /demo (footer):
+   REMOVED, Sep 2026: a "Book a demo" button in the sidebar, which posted
+   {type:'book-demo'} for the parent to act on. Kat's call — it was one more
+   thing to verify at launch. The parent-side listener still handles that
+   message type, so re-adding the button needs no Webflow change:
 
-     window.addEventListener('message', function (e) {
-       if (e.origin !== 'https://lexer-marketing.github.io') return;
-       var d = e.data;
-       if (!d || d.source !== 'lexer-demo') return;
+     - markup, after the .chat-nav-hint div:
+         <button type="button" class="chat-nav-cta"
+                 id="demo-embed-sidebar-cta">Book a demo</button>
+     - a teal pill style for .chat-nav-cta, hidden below 900px
+     - in the IIFE below:
+         document.getElementById('demo-embed-sidebar-cta')
+           .addEventListener('click', function () {
+             send({ type: 'book-demo', trigger: 'demo-embed-sidebar-cta' });
+           });
 
-       if (d.type === 'book-demo') {
-         var t = document.querySelector('[data-demo-modal-trigger]');
-         if (t) t.click();
-       }
-
-       if (d.type === 'scroll-into-view') {
-         var f = document.querySelector('iframe[src*="lexer-demo"]');
-         if (!f) return;
-         window.scrollTo({
-           top: window.scrollY + f.getBoundingClientRect().top - 140,
-           behavior: 'smooth'
-         });
-       }
-     });
+   The parent then clicks an existing [data-demo-modal-trigger] element,
+   replaying the exact path #demo-page-hero-cta already uses.
    ══════════════════════════════════════════════════════════════════════════ */
 (function () {
   var PARENT_ORIGIN = 'https://www.lexer.io';
   var inFrame = window.parent !== window;
   var row = document.getElementById('demo-prompts-row');
-  var cta = document.getElementById('demo-embed-sidebar-cta');
 
   function send(payload) {
     if (!inFrame) return false;
@@ -4344,28 +4297,6 @@ openChat(0);
     });
     row.appendChild(pill);
   });
-
-  // Sidebar Book a demo.
-  cta.addEventListener('click', function () {
-    send({ type: 'book-demo', trigger: 'demo-embed-sidebar-cta' });
-    if (!inFrame) {
-      mockToast('In production this posts book-demo to the parent, which clicks a [data-demo-modal-trigger] element \u2014 the same path #demo-page-hero-cta and #demo-page-secondary-cta already use.');
-    }
-  });
-
-  // Standalone-only helper so the mockup explains itself.
-  var toastEl, toastTimer;
-  function mockToast(msg) {
-    if (!toastEl) {
-      toastEl = document.createElement('div');
-      toastEl.className = 'mock-toast';
-      document.body.appendChild(toastEl);
-    }
-    toastEl.textContent = msg;
-    requestAnimationFrame(function () { toastEl.classList.add('show'); });
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 4200);
-  }
 })();
 
 </script>
