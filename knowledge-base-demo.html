@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lexi Knowledge Base</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rubik:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="text/javascript">
+  (function(c,l,a,r,i,t,y){
+    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+  })(window, document, "clarity", "script", "xi25pzdtd9");
+</script>
+<style>
+/* Shell: transparent, so the product sits on the page's own background */
+:root {
+  --teal: #00BEB7; --dark-teal: #087680; --bright-teal: #00E2AA; --navy: #3A405B;
+  --p-bg: #F4F4F3; --p-line: #E7E5E4; --p-line-2: #EFEEED; --p-text: #262A30; --p-muted: #737373;
+  --p-faint: #A3A3A3; --p-teal: #3E9E95; --p-teal-dk: #2E7F78; --p-navy: #353A50;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: transparent; }
+body { font-family: 'Rubik', system-ui, sans-serif; color: var(--navy); -webkit-font-smoothing: antialiased; }
+
+.lf { max-width: 1040px; margin: 0 auto; }
+.lf-frame { position: relative; width: 100%; aspect-ratio: 1184 / 680; overflow: hidden; border-radius: 14px; background: transparent; isolation: isolate; cursor: pointer; }
+.lf-canvas { position: absolute; left: 0; top: 0; width: 1184px; height: 680px; transform-origin: 0 0; }
+.lf-cam { position: absolute; left: 0; top: 0; width: 1184px; height: 680px; transform-origin: 0 0; }
+
+.pw { position: absolute; left: 0; top: 0; width: 1184px; height: 680px; border-radius: 14px; overflow: hidden; background: var(--p-bg); border: 1px solid #E2E0DE; font-family: 'Inter', system-ui, sans-serif; color: var(--p-text); }
+.pw-app { position: absolute; inset: 0; display: flex; }
+
+/* Sidebar */
+.ps { position: relative; width: 228px; flex-shrink: 0; padding: 18px 14px 14px; display: flex; flex-direction: column; }
+.ps-ws { display: flex; align-items: center; gap: 10px; padding: 6px 8px; }
+.ps-ws-ic { width: 30px; height: 30px; border-radius: 8px; background: var(--p-teal); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ps-ws-ic svg { width: 16px; height: 16px; }
+.ps-ws-n { display: block; font-size: 13px; font-weight: 600; line-height: 1.25; }
+.ps-ws-h { display: block; font-size: 11px; color: var(--p-muted); line-height: 1.3; }
+.ps-ws > svg { margin-left: auto; width: 15px; height: 15px; color: var(--p-muted); }
+.ps-nav { margin-top: 18px; display: flex; flex-direction: column; gap: 2px; }
+.ps-link { position: relative; display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: 8px; font-size: 13px; font-weight: 600; color: var(--p-text); }
+.ps-link svg { width: 17px; height: 17px; color: #525252; flex-shrink: 0; }
+.ps-link.active { background: #E9E9E7; }
+.ps-new-ic { width: 20px; height: 20px; border-radius: 50%; background: var(--p-teal); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ps-new-ic svg { width: 12px; height: 12px; color: #fff !important; stroke-width: 2.6; }
+.ps-cap { font-size: 11.5px; font-weight: 500; color: var(--p-muted); margin: 22px 8px 8px; }
+.ps-item { font-size: 13px; padding: 6px 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-radius: 6px; }
+.ps-recent { margin-top: auto; }
+.ps-user { display: flex; align-items: center; gap: 10px; padding: 12px 8px 2px; }
+.ps-av { width: 28px; height: 28px; border-radius: 7px; background: #E6E6E4; font-size: 11.5px; font-weight: 600; color: #525252; display: flex; align-items: center; justify-content: center; }
+.ps-user span { font-size: 12.5px; }
+.ps-user svg { margin-left: auto; width: 15px; height: 15px; color: var(--p-muted); }
+
+/* Main card */
+.pm { position: relative; flex: 1; min-width: 0; margin: 8px 8px 8px 0; background: #fff; border: 1px solid var(--p-line); border-radius: 12px; overflow: hidden; }
+.pm-top { height: 46px; display: flex; align-items: center; gap: 14px; padding: 0 16px; border-bottom: 1px solid var(--p-line-2); }
+.pm-top svg { width: 17px; height: 17px; color: #737373; flex-shrink: 0; }
+.pm-div { width: 1px; height: 18px; background: var(--p-line); }
+.pm-title { position: relative; font-size: 13.5px; font-weight: 500; white-space: nowrap; }
+.pm-title b { font-weight: 500; position: absolute; left: 0; top: 0; }
+.pv { position: absolute; left: 0; right: 0; top: 46px; bottom: 0; }
+
+/* Chat */
+.pc-body { position: absolute; left: 0; right: 0; top: 0; bottom: 112px; overflow: hidden; }
+.pc-col { position: relative; width: 640px; margin: 0 auto; padding: 22px 0 18px; }
+.pc-user { display: flex; justify-content: flex-end; margin-bottom: 14px; }
+.pc-bubble { max-width: 500px; background: #fff; border: 1px solid #E4E4E4; border-radius: 14px; padding: 11px 16px; font-size: 14.5px; line-height: 1.5; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+.pc-lexi { display: flex; align-items: center; height: 22px; margin-bottom: 8px; }
+.pc-lexi svg { width: 20px; height: 20px; display: block; }
+.pc-p { font-size: 14.5px; line-height: 1.55; margin-bottom: 12px; }
+.pc-p b { font-weight: 600; }
+
+/* Context and skill boxes (sit where Lexi's thinking steps sit; grow row by row) */
+.bx { position: relative; margin-bottom: 12px; }
+.bx-ol { position: absolute; left: 0; right: 0; top: 0; border: 1px solid #E4E4E4; border-radius: 8px; pointer-events: none; background: #fff; }
+.bx-sep { position: absolute; left: 1px; right: 1px; top: 33px; height: 1px; background: #EFEFEF; }
+.bx-h { position: relative; display: flex; align-items: center; gap: 9px; padding: 7px 12px; height: 34px; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; color: var(--p-teal-dk); white-space: nowrap; }
+.bx-g { position: relative; width: 18px; height: 18px; flex-shrink: 0; }
+.bx-g > * { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.bx-dot i { width: 6px; height: 6px; border-radius: 50%; background: #34D399; }
+.bx-ic { border-radius: 5px; background: rgba(62,158,149,0.12); }
+.bx-ic svg { width: 12px; height: 12px; }
+.bx-n { margin-left: auto; color: var(--p-muted); letter-spacing: 0.12em; }
+.bx-h .chev { width: 14px; height: 14px; color: #737373; flex-shrink: 0; }
+.bx-list { position: relative; padding: 5px 0; }
+.rs { position: relative; display: flex; align-items: center; gap: 10px; height: 30px; padding: 0 12px; font-size: 13px; color: #404040; white-space: nowrap; border-radius: 6px; }
+.rs b { font-weight: 600; color: var(--p-text); }
+.rs.on { background: rgba(62,158,149,0.08); }
+.kt { flex: 0 0 76px; text-align: center; font-size: 10.5px; font-weight: 600; color: var(--p-teal-dk); background: rgba(62,158,149,0.11); border-radius: 999px; padding: 2px 0; }
+.rs-g { position: relative; width: 16px; height: 16px; flex-shrink: 0; }
+.rs-g > * { position: absolute; inset: 0; border-radius: 50%; }
+.rs-wait { border: 1.5px solid #CFE7E4; }
+.rs-wait i { position: absolute; inset: -1.5px; border-radius: 50%; border: 1.5px solid transparent; border-top-color: var(--p-teal); }
+.rs-ok { background: var(--p-teal); color: #fff; display: flex; align-items: center; justify-content: center; }
+.rs-ok svg { width: 10px; height: 10px; stroke-width: 3; }
+
+/* Definition card (opens from the VIP row) */
+.df { position: absolute; left: 98px; top: 74px; width: 330px; z-index: 4; background: #fff; border: 1px solid #E2E2E2; border-radius: 10px; box-shadow: 0 12px 32px -12px rgba(38,42,48,0.28), 0 2px 6px rgba(0,0,0,0.04); overflow: hidden; }
+.df-h { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid #EFEFEF; font-size: 13.5px; font-weight: 600; }
+.df-h svg { width: 15px; height: 15px; color: var(--p-teal-dk); }
+.df-h .pill { margin-left: auto; font-size: 10.5px; font-weight: 600; color: var(--p-muted); background: #F5F5F5; border: 1px solid #E6E6E6; border-radius: 999px; padding: 1px 8px; }
+.df-r { display: flex; gap: 10px; padding: 8px 12px; font-size: 12.5px; line-height: 1.45; border-top: 1px solid #F3F3F3; }
+.df-r:first-of-type { border-top: none; }
+.df-l { flex: 0 0 72px; color: var(--p-muted); font-size: 12px; }
+.df-v { flex: 1; min-width: 0; }
+.df-v b { font-weight: 600; }
+.df-f { padding: 8px 12px; background: #FAFAFA; border-top: 1px solid #EFEFEF; font-size: 11.5px; color: #525252; }
+
+/* Answer stats */
+.sc { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid #E6E6E6; border-radius: 10px; margin-bottom: 14px; background: #fff; }
+.sc > div { padding: 12px 14px; }
+.sc > div + div { border-left: 1px solid #EFEFEF; }
+.sc-l { font-size: 12px; color: var(--p-muted); white-space: nowrap; }
+.sc-n { font-size: 24px; font-weight: 600; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; margin-top: 2px; }
+.sc-bar { height: 6px; border-radius: 999px; background: #EFEFEF; margin-top: 8px; overflow: hidden; }
+.sc-bar i { display: block; height: 100%; width: 0; border-radius: 999px; background: var(--p-teal); }
+
+/* Memory note and plan table */
+.mem { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--p-muted); margin-bottom: 10px; height: 26px; }
+.mem-ic { width: 22px; height: 22px; border-radius: 6px; background: #F3F2F1; color: #6B6B6B; display: flex; align-items: center; justify-content: center; }
+.mem-ic svg { width: 13px; height: 13px; }
+.mem b { font-weight: 600; color: var(--p-text); }
+.tb { border: 1px solid #E6E6E6; border-radius: 10px; overflow: hidden; margin-bottom: 14px; background: #fff; }
+.tb-r { display: grid; grid-template-columns: 112px 176px minmax(0,1fr); gap: 14px; align-items: center; height: 40px; padding: 0 14px; border-top: 1px solid #F1F1F1; font-size: 12.5px; white-space: nowrap; }
+.tb-r > span { overflow: hidden; text-overflow: ellipsis; }
+.tb-r.h { border-top: none; background: #FAFAFA; font-weight: 600; font-size: 12px; height: 36px; }
+.tb-r .w { font-variant-numeric: tabular-nums; color: #525252; }
+.tb-r .a { font-weight: 600; }
+
+.caret { display: inline-block; width: 1.5px; height: 15px; margin-left: 1px; vertical-align: -2px; background: var(--p-text); }
+.pc-composer { position: absolute; left: 0; right: 0; bottom: 0; height: 112px; background: linear-gradient(rgba(255,255,255,0), #fff 18%); }
+.pc-box { position: relative; width: 668px; margin: 4px auto 0; min-height: 72px; border: 1px solid #E2E2E2; border-radius: 14px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 13px 54px 13px 14px; font-size: 13.5px; line-height: 1.45; }
+.pc-box.focus { border-color: var(--p-teal); box-shadow: 0 0 0 3px rgba(62,158,149,0.12), 0 2px 8px rgba(0,0,0,0.05); }
+.pc-box .ph { color: #A3A3A3; }
+.pc-send { position: absolute; right: 10px; bottom: 10px; width: 30px; height: 30px; border-radius: 50%; background: rgba(62,158,149,0.5); color: #fff; display: flex; align-items: center; justify-content: center; }
+.pc-send.ready { background: var(--p-teal); }
+.pc-send.pressed { filter: brightness(0.85); }
+.pc-send svg { width: 15px; height: 15px; stroke-width: 2.4; }
+.pc-disc { text-align: center; font-size: 11px; color: var(--p-muted); margin-top: 8px; }
+
+.lf-cursor { position: absolute; left: 0; top: 0; width: 22px; height: 22px; margin: -3px 0 0 -4px; pointer-events: none; z-index: 50; filter: drop-shadow(0 2px 3px rgba(58,64,91,0.3)); }
+.lf-cursor svg { position: relative; display: block; }
+.lf-ripple { position: absolute; left: 4px; top: 3px; width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 50%; background: rgba(0,190,183,0.35); opacity: 0; }
+
+@media (max-width: 600px) { .lf-frame { border-radius: 10px; } }
+</style>
+</head>
+<body>
+
+<div class="lf" id="lf">
+  <div class="lf-frame" id="lf-frame" role="img" aria-label="Animated walkthrough: Lexi answers a question about VIPs using the business's own VIP definition, trading calendar and exclusions, then runs a peak period planning skill and lays out the plan the way the user prefers">
+    <div class="lf-canvas" id="lf-canvas"><div class="lf-cam" id="lf-cam"></div></div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   LEXI KNOWLEDGE BASE: WEBSITE EMBED (Oct 2026)
+   For /platform/knowledge-base on lexer.io ("Watch Lexi put your
+   definitions to work"). Beats: your definitions in an answer, open the VIP
+   definition, a skill runs, memory shapes the reply.
+   Product only: no player, captions or cards. Loops; a click pauses it.
+   All copy and data live in FILM. Edit there.
+   ══════════════════════════════════════════════════════════════════════════ */
+var FILM = {
+  id: 'lexi-knowledge-base-web',
+  loopHoldMs: 2400,                    // pause on the final frame before the film loops
+  workspace: { name: 'Fitness Co', handle: 'fitness-co' },
+  user: { initials: 'ST', name: 'Sam Taylor' },
+  pinned: ['Improving Customer Retention'],
+  recent: ['Lapsing VIP Members Segment', 'Winter Range Sell-Through', 'Full-Price Loyalists Review', 'Second Order Conversion', 'Store Performance by Region'],
+  titleBefore: 'New chat',
+  titleAfter: 'VIPs and peak planning',
+  placeholder: 'Try: Analyse my best customers in the last 30 days',
+
+  // 1. Your definitions, in an answer
+  prompt1: 'How did our VIPs respond to last month’s promotion?',
+  contextLabel: 'Using your knowledge base',
+  context: [
+    // tag, text (HTML)
+    ['Definition', '<b>VIP</b>: top 10% by 12-month spend'],
+    ['Calendar', '<b>Spring Sale</b>: 1 to 14 September'],
+    ['Rule', 'Staff and wholesale orders excluded']
+  ],
+  answer1: 'Using your VIP definition (top 10% by 12-month spend), <b>61%</b> bought during the promotion, and most spent above their usual average.',
+  stats: [
+    // label, value %, suffix
+    ['VIPs who bought in the Spring Sale', 61],
+    ['Of those, spent above their average', 72]
+  ],
+
+  // 2. Definitions you own
+  definition: {
+    name: 'VIP',
+    badge: 'Default',
+    rows: [
+      ['Rule', 'Top <b>10%</b> of customers by spend over the last <b>12 months</b>'],
+      ['Customers', '<b>3,120</b> today'],
+      ['Used in', '<b>14</b> segments and <b>6</b> dashboards']
+    ],
+    foot: 'Every answer, segment and dashboard uses this definition.'
+  },
+
+  // 3. A skill runs, shaped by memory
+  prompt2: 'Plan our strategy for the next peak period',
+  skillRunning: 'Running skill',
+  skillLabel: 'Skill: Peak period plan',
+  skillSteps: [
+    'Reviewed last year’s Black Friday to Christmas trading',
+    'Ranked segments by expected gross margin',
+    'Built a week-by-week plan'
+  ],
+  memory: 'Remembered: you’re the <b>CRM manager</b> and prefer <b>tables</b>',
+  answer2: 'Here’s your peak plan, protecting full-price sales where it counts.',
+  table: {
+    head: ['Week', 'Who', 'What to send'],
+    rows: [
+      ['3 to 9 Nov', 'Lapsed VIPs', 'Early access to the summer range, full price'],
+      ['17 to 30 Nov', 'Full-price loyalists', 'Black Friday preview, no discount'],
+      ['1 to 21 Dec', 'Last year’s gift buyers', 'Gift guide email and a reminder SMS']
+    ]
+  }
+};
+
+(function () {
+  'use strict';
+
+  /* ── Timeline (ms). Every frame is a pure function of t. ── */
+  var T = {
+    click1: 1100, typeA1: 1250, typeB1: 3550, send1: 3900, bubble1: 4000,
+    lexi1: 4200, kb: 4350, kbOn: 4650, kbRows: [4750, 5300, 5850], think1: 6350,
+    ans1: 6450, stat: 6800, countA: 7050, countB: 8000,
+    defClick: 9200, def: 9300, defRows: [9450, 9600, 9750], defFoot: 9950,
+    click2: 11700, defOut: 11700, typeA2: 11850, typeB2: 13450, send2: 13800, bubble2: 13900,
+    lexi2: 14100, sk: 14250, skOn: 14550, skSteps: [14650, 15250, 15850], think2: 16450,
+    mem: 16500, ans2: 16750, tb: 17050, tbRows: [17250, 17450, 17650],
+    total: 20200
+  };
+  var CURSOR = [
+    { at: 250, dur: 800, to: '#pc-box', click: T.click1 },
+    { at: 3600, dur: 280, to: '#pc-send', click: T.send1 },
+    { at: 4250, dur: 900, to: '#pc-box', fx: 0.9, click: null },   // park clear of the reply
+    { at: 8400, dur: 780, to: '#kr0', fx: 0.32, click: T.defClick },
+    { at: 10950, dur: 720, to: '#pc-box', click: T.click2 },
+    { at: 13500, dur: 280, to: '#pc-send', click: T.send2 },
+    { at: 14200, dur: 900, to: '#pc-box', fx: 0.9, click: null },
+    { at: 17700, dur: 1000, to: '#tb', fx: 0.97, click: null }
+  ];
+  // Thread scrolls as Lexi replies (eased, keyed to reveals; layout never shifts)
+  var SCROLL = [
+    { at: 13900, dur: 600, to: '#u2', pad: 16 },
+    { at: 14600, dur: 900, to: '#sk', pad: 16 },
+    { at: 16600, dur: 1000, to: '#tb', pad: 16 }
+  ];
+  // Push in on the first reply, then pan down at the same zoom for the second prompt and stay there
+  var CAM = [
+    { at: 3950, dur: 1000, rect: { x: 370, y: 50, w: 664, h: 500 }, k: 1.2 },
+    { at: 10800, dur: 900, rect: { x: 370, y: 170, w: 664, h: 500 }, k: 1.2 }
+  ];
+
+  /* ── Helpers ── */
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function ease(p) { return p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; }
+  function eo(p) { return 1 - Math.pow(1 - p, 3); }
+  function prog(t, a, b) { return clamp((t - a) / (b - a), 0, 1); }
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+  function clarity() { try { if (window.clarity) window.clarity.apply(null, arguments); } catch (e) {} }
+  function cev(name) { clarity('event', FILM.id + '_' + name); }
+  clarity('set', 'film', FILM.id);
+
+  var SVG = function (p, sw) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (sw || 1.8) + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + '</svg>'; };
+  var I = {
+    panel: SVG('<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/>'),
+    store: SVG('<path d="M5 8h14l-1 12H6Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>'),
+    updown: SVG('<path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>'),
+    plus: SVG('<path d="M12 5v14"/><path d="M5 12h14"/>'),
+    users: SVG('<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>'),
+    radio: SVG('<path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"/>'),
+    grid: SVG('<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>'),
+    chev: SVG('<path d="m6 9 6 6 6-6"/>'),
+    up: SVG('<path d="M12 19V5"/><path d="m5 12 7-7 7 7"/>'),
+    check: SVG('<path d="M20 6 9 17l-5-5"/>', 2.4),
+    book: SVG('<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>', 2),
+    spark: SVG('<path d="M12 3v4"/><path d="M12 17v4"/><path d="M3 12h4"/><path d="M17 12h4"/><path d="m6 6 2.5 2.5"/><path d="m15.5 15.5 2.5 2.5"/><path d="m6 18 2.5-2.5"/><path d="m15.5 8.5 2.5-2.5"/>', 2),
+    user: SVG('<circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/>'),
+    tag: SVG('<path d="M12 2H2v10l9.3 9.3a1 1 0 0 0 1.4 0l8.6-8.6a1 1 0 0 0 0-1.4Z"/><circle cx="7" cy="7" r="1.5"/>')
+  };
+
+  /* ── Build the product ── */
+  var cam = $('#lf-cam'), D = FILM.definition, TB = FILM.table;
+  function lexiMark(n) {
+    return '<div class="pc-lexi" id="lx' + n + '" aria-label="Lexi"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.6" fill="none" stroke="#FF329D" stroke-width="2.8" id="lx' + n + '-base"/><circle cx="10" cy="10" r="7.6" fill="none" stroke="#FF329D" stroke-width="2.8" stroke-linecap="round" stroke-dasharray="14 34" id="lx' + n + '-arc" transform="rotate(-90 10 10)"/></svg></div>';
+  }
+  function boxHead(id, icon) {
+    return '<div class="bx-h"><span class="bx-g"><span class="bx-dot" id="' + id + '-dot"><i></i></span><span class="bx-ic" id="' + id + '-ic">' + icon + '</span></span><span id="' + id + '-t"></span>' +
+      '<span class="bx-n" id="' + id + '-n"></span>' + I.chev.replace('<svg', '<svg class="chev"') + '</div>';
+  }
+  cam.innerHTML =
+    '<div class="pw"><div class="pw-app">' +
+      '<aside class="ps">' +
+        '<div class="ps-ws"><span class="ps-ws-ic">' + I.store + '</span><span><span class="ps-ws-n">' + esc(FILM.workspace.name) + '</span><span class="ps-ws-h">' + esc(FILM.workspace.handle) + '</span></span>' + I.updown + '</div>' +
+        '<nav class="ps-nav">' +
+          '<div class="ps-link active"><span class="ps-new-ic">' + I.plus + '</span>New Chat</div>' +
+          '<div class="ps-link">' + I.users + 'Segments</div>' +
+          '<div class="ps-link">' + I.radio + 'Activations</div>' +
+          '<div class="ps-link">' + I.grid + 'Dashboards</div>' +
+        '</nav>' +
+        '<div class="ps-cap">Pinned Chats</div>' + FILM.pinned.map(function (c) { return '<div class="ps-item">' + esc(c) + '</div>'; }).join('') +
+        '<div class="ps-recent"><div class="ps-cap">Recent Chats</div>' + FILM.recent.map(function (c) { return '<div class="ps-item">' + esc(c) + '</div>'; }).join('') + '</div>' +
+        '<div class="ps-user"><span class="ps-av">' + esc(FILM.user.initials) + '</span><span>' + esc(FILM.user.name) + '</span>' + I.updown + '</div>' +
+      '</aside>' +
+      '<main class="pm">' +
+        '<div class="pm-top">' + I.panel + '<span class="pm-div"></span><span class="pm-title"><span id="pm-t1">' + esc(FILM.titleBefore) + '</span><b id="pm-t2">' + esc(FILM.titleAfter) + '</b></span></div>' +
+        '<section class="pv">' +
+          '<div class="pc-body" id="pc-body"><div class="pc-col" id="pc-col">' +
+            // 1. Your definitions, in an answer
+            '<div class="pc-user" id="u1"><div class="pc-bubble">' + esc(FILM.prompt1) + '</div></div>' +
+            lexiMark(1) +
+            '<div class="bx" id="kb"><i class="bx-ol" id="kb-ol"></i><i class="bx-sep" id="kb-sep"></i>' + boxHead('kb', I.book) +
+              '<div class="bx-list">' + FILM.context.map(function (c, i) {
+                return '<div class="rs" id="kr' + i + '"><span class="kt">' + esc(c[0]) + '</span><span>' + c[1] + '</span></div>';
+              }).join('') + '</div>' +
+              // 2. Definitions you own
+              '<div class="df" id="df"><div class="df-h">' + I.tag + '<span>' + esc(D.name) + '</span><span class="pill">' + esc(D.badge) + '</span></div>' +
+                D.rows.map(function (r, i) { return '<div class="df-r" id="dr' + i + '"><span class="df-l">' + esc(r[0]) + '</span><span class="df-v">' + r[1] + '</span></div>'; }).join('') +
+                '<div class="df-f" id="dff">' + esc(D.foot) + '</div></div>' +
+            '</div>' +
+            '<p class="pc-p" id="a1">' + FILM.answer1 + '</p>' +
+            '<div class="sc" id="sc">' + FILM.stats.map(function (s, i) {
+              return '<div><div class="sc-l">' + esc(s[0]) + '</div><div class="sc-n" id="sn' + i + '">0%</div><div class="sc-bar"><i id="sb' + i + '"></i></div></div>';
+            }).join('') + '</div>' +
+            // 3. A skill runs, shaped by memory
+            '<div class="pc-user" id="u2" style="margin-top:18px"><div class="pc-bubble">' + esc(FILM.prompt2) + '</div></div>' +
+            lexiMark(2) +
+            '<div class="bx" id="sk"><i class="bx-ol" id="sk-ol"></i><i class="bx-sep" id="sk-sep"></i>' + boxHead('sk', I.spark) +
+              '<div class="bx-list">' + FILM.skillSteps.map(function (s, i) {
+                return '<div class="rs" id="ss' + i + '"><span class="rs-g"><span class="rs-wait" id="ss' + i + '-w"><i id="ss' + i + '-sp"></i></span><span class="rs-ok" id="ss' + i + '-ok">' + I.check + '</span></span>' + esc(s) + '</div>';
+              }).join('') + '</div>' +
+            '</div>' +
+            '<div class="mem" id="mem"><span class="mem-ic">' + I.user + '</span><span>' + FILM.memory + '</span></div>' +
+            '<p class="pc-p" id="a2">' + esc(FILM.answer2) + '</p>' +
+            '<div class="tb" id="tb"><div class="tb-r h">' + TB.head.map(function (h) { return '<span>' + esc(h) + '</span>'; }).join('') + '</div>' +
+              TB.rows.map(function (r, i) { return '<div class="tb-r" id="tr' + i + '"><span class="w">' + esc(r[0]) + '</span><span class="a">' + esc(r[1]) + '</span><span>' + esc(r[2]) + '</span></div>'; }).join('') +
+            '</div>' +
+          '</div></div>' +
+          '<div class="pc-composer"><div class="pc-box" id="pc-box"><span class="ph" id="pc-ph">' + esc(FILM.placeholder) + '</span><span id="pc-typed"></span><span class="caret" id="pc-caret"></span><span class="pc-send" id="pc-send">' + I.up + '</span></div>' +
+          '<div class="pc-disc">Lexi is AI and can make mistakes. Verify important information.</div></div>' +
+        '</section>' +
+      '</main>' +
+    '</div></div>' +
+    '<div class="lf-cursor" id="lf-cursor"><span class="lf-ripple" id="lf-ripple"></span><svg viewBox="0 0 24 24" width="22" height="22"><path d="M5 3l14 8.2-6.3 1.5L9.6 19z" fill="#3A405B" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>';
+
+  var el = {};
+  Array.prototype.forEach.call(cam.querySelectorAll('[id]'), function (n) { el[n.id] = n; });
+
+  function show(e, on, disp) { var d = on ? (disp || '') : 'none'; if (e.style.display !== d) e.style.display = d; }
+  function cls(e, c, on) { e.classList.toggle(c, !!on); }
+  function txt(e, v) { if (e.textContent !== v) e.textContent = v; }
+  // Fade-up reveal that keeps its space, so the layout never shifts. Nothing left behind once finished.
+  function reveal(e, t, at, dur, dy) {
+    var p = prog(t, at, at + (dur || 380));
+    e.style.visibility = p > 0 ? '' : 'hidden';
+    if (p >= 1 || p <= 0) { e.style.opacity = ''; e.style.transform = ''; return; }
+    var q = eo(p);
+    e.style.opacity = q.toFixed(3);
+    e.style.transform = 'translateY(' + ((1 - q) * (dy == null ? 6 : dy)).toFixed(2) + 'px)';
+  }
+  function pressedAt(t, at) { return at != null && t >= at && t < at + 180; }
+  function caretOn(t) { return Math.floor(t / 530) % 2 === 0; }
+  function pct(e, v) { var w = v.toFixed(2) + '%'; if (e.style.width !== w) e.style.width = w; }
+
+  /* ── Geometry (offset based, so reveals never wobble the camera or scroll) ── */
+  function offIn(e, root) { var x = 0, y = 0, n = e; while (n && n !== root) { x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent; } return n === root ? { x: x, y: y, w: e.offsetWidth, h: e.offsetHeight } : null; }
+  // Measured live, so a late web-font load can't throw the targets off
+  function scrollTarget(s) {
+    var e = el[s.to.slice(1)], y = 0, n = e;
+    while (n && n !== el['pc-col']) { y += n.offsetTop; n = n.offsetParent; }
+    return Math.max(0, y + e.offsetHeight + s.pad - el['pc-body'].clientHeight);
+  }
+  function scrollAt(t) {
+    var y = 0;
+    for (var i = 0; i < SCROLL.length; i++) {
+      var s = SCROLL[i]; if (t < s.at) break;
+      y = y + (scrollTarget(s) - y) * ease(prog(t, s.at, s.at + s.dur));
+    }
+    return y;
+  }
+
+  /* ── Scene ── */
+  function lexiState(n, t, at, end) {
+    reveal(el['lx' + n], t, at, 360);
+    var tracing = t < end;
+    el['lx' + n + '-base'].setAttribute('stroke-opacity', tracing ? '0.22' : '1');
+    el['lx' + n + '-arc'].style.display = tracing ? '' : 'none';
+    if (tracing) el['lx' + n + '-arc'].setAttribute('transform', 'rotate(' + ((t - at) * 0.36 - 90).toFixed(1) + ' 10 10)');
+  }
+  // A box whose header resolves from a pending label to its name, and whose outline grows row by row
+  function boxState(id, t, at, on, rowsAt, pending, label, unit) {
+    reveal(el[id], t, at, 320);
+    var done = t >= on;
+    txt(el[id + '-t'], (done ? label : pending + '…').toUpperCase());
+    show(el[id + '-dot'], !done, 'flex'); show(el[id + '-ic'], done, 'flex');
+    el[id + '-dot'].firstChild.style.opacity = done ? '' : (0.35 + 0.65 * (0.5 + 0.5 * Math.cos(t / 140))).toFixed(2);
+    var ip = prog(t, on, on + 260);
+    el[id + '-ic'].style.transform = ip > 0 && ip < 1 ? 'scale(' + (0.6 + 0.4 * eo(ip)).toFixed(3) + ')' : '';
+    var rows = 0, shown = 0;
+    rowsAt.forEach(function (a) { rows += eo(prog(t, a, a + 320)); if (t >= a) shown++; });
+    el[id + '-ol'].style.height = (34 + (rows > 0 ? 10 * Math.min(1, rows) + 30 * rows : 0)).toFixed(2) + 'px';
+    el[id + '-sep'].style.opacity = Math.min(1, rows).toFixed(3);
+    txt(el[id + '-n'], shown ? shown + ' ' + (shown === 1 ? unit[0] : unit[1]) : '');
+  }
+
+  function renderScene(t) {
+    var tp = prog(t, T.bubble1, T.bubble1 + 300);
+    el['pm-t1'].style.opacity = (1 - tp).toFixed(3); el['pm-t2'].style.opacity = tp.toFixed(3);
+    el['pm-t1'].style.visibility = tp >= 1 ? 'hidden' : '';
+
+    // Composer: two prompts, typed in turn
+    var typed = '', focus = false, typing = false, ready = false;
+    if (t >= T.click1 && t < T.bubble1) {
+      focus = true; typing = t >= T.typeA1 && t < T.typeB1;
+      var p1 = prog(t, T.typeA1, T.typeB1); typed = FILM.prompt1.slice(0, Math.round(FILM.prompt1.length * p1)); ready = p1 > 0.05;
+    } else if (t >= T.click2 && t < T.bubble2) {
+      focus = true; typing = t >= T.typeA2 && t < T.typeB2;
+      var p2 = prog(t, T.typeA2, T.typeB2); typed = FILM.prompt2.slice(0, Math.round(FILM.prompt2.length * p2)); ready = p2 > 0.05;
+    }
+    txt(el['pc-typed'], typed);
+    show(el['pc-ph'], typed === '');
+    cls(el['pc-box'], 'focus', focus);
+    show(el['pc-caret'], focus && (typing || caretOn(t)));
+    cls(el['pc-send'], 'ready', ready);
+    cls(el['pc-send'], 'pressed', pressedAt(t, T.send1) || pressedAt(t, T.send2));
+
+    el['pc-col'].style.transform = 'translateY(' + (-scrollAt(t)).toFixed(2) + 'px)';
+
+    // 1. Your definitions, in an answer
+    reveal(el['u1'], t, T.bubble1, 360);
+    lexiState(1, t, T.lexi1, T.ans1);
+    boxState('kb', t, T.kb, T.kbOn, T.kbRows, 'Checking your knowledge base', FILM.contextLabel, ['ITEM', 'ITEMS']);
+    FILM.context.forEach(function (c, i) { reveal(el['kr' + i], t, T.kbRows[i], 320, 4); });
+    reveal(el['a1'], t, T.ans1, 380);
+    reveal(el['sc'], t, T.stat, 420, 8);
+    FILM.stats.forEach(function (s, i) {
+      var v = s[1] * ease(prog(t, T.countA + i * 180, T.countB + i * 180));
+      txt(el['sn' + i], Math.round(v) + '%'); pct(el['sb' + i], v);
+    });
+
+    // 2. Definitions you own: the VIP row opens its definition
+    cls(el['kr0'], 'on', t >= T.defClick && t < T.defOut + 250);
+    var dIn = prog(t, T.def, T.def + 320), dOut = prog(t, T.defOut, T.defOut + 250);
+    var dv = eo(dIn) * (1 - dOut);
+    show(el['df'], dv > 0, 'block');
+    el['df'].style.opacity = dv >= 1 ? '' : dv.toFixed(3);
+    el['df'].style.transform = dv >= 1 ? '' : 'translateY(' + ((1 - eo(dIn)) * -6).toFixed(2) + 'px)';
+    D.rows.forEach(function (r, i) { reveal(el['dr' + i], t, T.defRows[i], 300, 3); });
+    reveal(el['dff'], t, T.defFoot, 340, 0);
+
+    // 3. A skill runs, shaped by memory
+    reveal(el['u2'], t, T.bubble2, 360);
+    lexiState(2, t, T.lexi2, T.ans2);
+    boxState('sk', t, T.sk, T.skOn, T.skSteps, FILM.skillRunning, FILM.skillLabel, ['STEP', 'STEPS']);
+    FILM.skillSteps.forEach(function (s, i) {
+      var at = T.skSteps[i], end = i < FILM.skillSteps.length - 1 ? T.skSteps[i + 1] : T.think2;
+      reveal(el['ss' + i], t, at, 320, 4);
+      var ok = t >= end - 120;
+      show(el['ss' + i + '-w'], !ok, 'block'); show(el['ss' + i + '-ok'], ok, 'flex');
+      if (!ok) el['ss' + i + '-sp'].style.transform = 'rotate(' + ((t - at) * 0.6).toFixed(1) + 'deg)';
+    });
+    reveal(el['mem'], t, T.mem, 380, 4);
+    reveal(el['a2'], t, T.ans2, 380);
+    reveal(el['tb'], t, T.tb, 420, 8);
+    TB.rows.forEach(function (r, i) { reveal(el['tr' + i], t, T.tbRows[i], 320, 4); });
+  }
+
+  /* ── Camera and cursor ── */
+  var W = 1184, H = 680;
+  var REDUCE = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function framing(kf) {
+    if (!kf.rect || REDUCE) return { k: 1, tx: 0, ty: 0 };
+    var r = kf.rect;
+    var k = Math.max(1, Math.min(kf.k || 1.5, W * 0.92 / r.w, H * 0.92 / r.h));
+    return { k: k, tx: clamp(W / 2 - k * (r.x + r.w / 2), W - k * W, 0), ty: clamp(H / 2 - k * (r.y + r.h / 2), H - k * H, 0) };
+  }
+  function renderCamera(t) {
+    var st = { k: 1, tx: 0, ty: 0 };
+    for (var i = 0; i < CAM.length; i++) {
+      var kf = CAM[i]; if (t < kf.at) break;
+      var e = ease(prog(t, kf.at, kf.at + kf.dur)), tg = framing(kf);
+      st = { k: st.k + (tg.k - st.k) * e, tx: st.tx + (tg.tx - st.tx) * e, ty: st.ty + (tg.ty - st.ty) * e };
+    }
+    cam.style.transform = (st.k === 1 && !st.tx && !st.ty) ? '' : 'translate(' + st.tx.toFixed(2) + 'px,' + st.ty.toFixed(2) + 'px) scale(' + st.k.toFixed(4) + ')';
+  }
+  var lastPts = {};
+  function pointOf(sel, t, fx) {
+    var key = sel + (fx || ''), e = $(sel, cam); if (!e || !e.offsetParent) return lastPts[key] || null;
+    var r = offIn(e, cam); if (!r) return lastPts[key] || null;
+    var dy = el['pc-col'].contains(e) ? -scrollAt(t) : 0;   // thread targets move with its scroll
+    lastPts[key] = { x: r.x + (fx != null ? r.w * fx : Math.min(r.w * 0.5, 46)), y: r.y + r.h * 0.55 + dy };
+    return lastPts[key];
+  }
+  function renderCursor(t) {
+    var c = el['lf-cursor'], prev = { x: 760, y: 560 }, pos = prev, click = null;
+    if (t < CURSOR[0].at - 200) { c.style.opacity = 0; return; }
+    for (var i = 0; i < CURSOR.length; i++) {
+      var w = CURSOR[i];
+      if (t < w.at) { pos = prev; break; }
+      var tg = pointOf(w.to, Math.min(t, w.at + w.dur), w.fx) || prev;
+      var e = ease(prog(t, w.at, w.at + w.dur));
+      pos = { x: prev.x + (tg.x - prev.x) * e, y: prev.y + (tg.y - prev.y) * e };
+      if (w.click != null && t >= w.click && t < w.click + 450) click = (t - w.click) / 450;
+      prev = tg;
+    }
+    c.style.opacity = clamp((t - CURSOR[0].at + 200) / 200, 0, 1).toFixed(2);
+    c.style.transform = 'translate(' + pos.x.toFixed(1) + 'px,' + pos.y.toFixed(1) + 'px)';
+    var rp = el['lf-ripple'];
+    if (click == null) rp.style.opacity = 0; else { rp.style.opacity = (1 - click).toFixed(2); rp.style.transform = 'scale(' + (0.2 + 1.1 * ease(click)).toFixed(3) + ')'; }
+  }
+
+  /* ── Fit the 1184×680 canvas to the frame ── */
+  var frame = $('#lf-frame'), canvas = $('#lf-canvas');
+  function fit() { canvas.style.transform = 'scale(' + (frame.clientWidth / W).toFixed(5) + ')'; }
+  fit();
+  if ('ResizeObserver' in window) new ResizeObserver(fit).observe(frame); else window.addEventListener('resize', fit);
+
+  /* ── Player: no visible controls. Loops; click to pause. ── */
+  var P = { t: 0, playing: false, started: false, last: 0, done: false, fadeIn: false };
+  function render() {
+    var t = Math.min(P.t, T.total);
+    renderScene(t); renderCamera(t); renderCursor(t);
+    var o = 1;
+    if (P.t > T.total + FILM.loopHoldMs - 450) o = 1 - prog(P.t, T.total + FILM.loopHoldMs - 450, T.total + FILM.loopHoldMs);
+    if (P.fadeIn) o = Math.min(o, prog(P.t, 0, 450));
+    frame.style.opacity = o >= 1 ? '' : o.toFixed(3);
+  }
+  function loop(now) {
+    if (P.playing) {
+      P.t += Math.min(now - P.last, 80);
+      if (P.t >= T.total && !P.done) { P.done = true; cev('complete'); }
+      if (P.t >= T.total + FILM.loopHoldMs) { P.t = 0; P.done = false; P.fadeIn = true; }
+      if (P.fadeIn && P.t > 500) P.fadeIn = false;
+    }
+    P.last = now; render();
+    requestAnimationFrame(loop);
+  }
+  function play() { P.playing = true; P.started = true; }
+  function pause() { P.playing = false; }
+  function seek(t) { P.t = clamp(t, 0, T.total); P.fadeIn = false; render(); }
+  frame.addEventListener('pointerdown', function () { if (P.playing) { pause(); cev('pause'); } else { play(); cev('play'); } });
+
+  window.LexiFilm = { seek: function (t) { P.playing = false; seek(t); }, total: T.total, play: play, pause: pause };
+
+  /* ── Start: frame 0, autoplay once on screen. Reduced motion shows the final frame, still. ── */
+  seek(0);
+  requestAnimationFrame(function (now) { P.last = now; requestAnimationFrame(loop); });
+  if (REDUCE) { seek(T.total); return; }
+  if (/[?&]noplay\b/.test(location.search)) return;
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) { es.forEach(function (en) { if (en.isIntersecting && en.intersectionRatio >= 0.4 && !P.started) { play(); cev('autoplay'); io.disconnect(); } }); }, { threshold: [0, 0.4, 0.7] });
+    io.observe(frame);
+  } else play();
+})();
+</script>
+</body>
+</html>
