@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lexi Dashboards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rubik:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="text/javascript">
+  (function(c,l,a,r,i,t,y){
+    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+  })(window, document, "clarity", "script", "xi25pzdtd9");
+</script>
+<style>
+/* Shell: transparent, so the product sits on the page's own background */
+:root {
+  --teal: #00BEB7; --dark-teal: #087680; --bright-teal: #00E2AA; --navy: #3A405B;
+  --p-bg: #F4F4F3; --p-line: #E7E5E4; --p-line-2: #EFEEED; --p-text: #262A30; --p-muted: #737373;
+  --p-faint: #A3A3A3; --p-teal: #3E9E95; --p-teal-dk: #2E7F78; --p-navy: #353A50;
+  --p-down: #B45309; --p-down-bg: rgba(180,83,9,0.10);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: transparent; }
+body { font-family: 'Rubik', system-ui, sans-serif; color: var(--navy); -webkit-font-smoothing: antialiased; }
+
+.lf { max-width: 1040px; margin: 0 auto; }
+.lf-frame { position: relative; width: 100%; aspect-ratio: 1184 / 680; overflow: hidden; border-radius: 14px; background: transparent; isolation: isolate; cursor: pointer; }
+.lf-canvas { position: absolute; left: 0; top: 0; width: 1184px; height: 680px; transform-origin: 0 0; }
+.lf-cam { position: absolute; left: 0; top: 0; width: 1184px; height: 680px; transform-origin: 0 0; }
+
+.pw { position: absolute; left: 0; top: 0; width: 1184px; height: 680px; border-radius: 14px; overflow: hidden; background: var(--p-bg); border: 1px solid #E2E0DE; font-family: 'Inter', system-ui, sans-serif; color: var(--p-text); }
+.pw-app { position: absolute; inset: 0; display: flex; }
+
+/* Sidebar */
+.ps { position: relative; width: 228px; flex-shrink: 0; padding: 18px 14px 14px; display: flex; flex-direction: column; }
+.ps-ws { display: flex; align-items: center; gap: 10px; padding: 6px 8px; }
+.ps-ws-ic { width: 30px; height: 30px; border-radius: 8px; background: var(--p-teal); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ps-ws-ic svg { width: 16px; height: 16px; }
+.ps-ws-n { display: block; font-size: 13px; font-weight: 600; line-height: 1.25; }
+.ps-ws-h { display: block; font-size: 11px; color: var(--p-muted); line-height: 1.3; }
+.ps-ws > svg { margin-left: auto; width: 15px; height: 15px; color: var(--p-muted); }
+.ps-nav { margin-top: 18px; display: flex; flex-direction: column; gap: 2px; }
+.ps-link { position: relative; display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: 8px; font-size: 13px; font-weight: 600; color: var(--p-text); }
+.ps-link svg { width: 17px; height: 17px; color: #525252; flex-shrink: 0; }
+.ps-link.active { background: #E9E9E7; }
+.ps-link.pressed { background: #DEDEDB; }
+.ps-new-ic { width: 20px; height: 20px; border-radius: 50%; background: var(--p-teal); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ps-new-ic svg { width: 12px; height: 12px; color: #fff !important; stroke-width: 2.6; }
+.ps-cap { font-size: 11.5px; font-weight: 500; color: var(--p-muted); margin: 22px 8px 8px; }
+.ps-item { font-size: 13px; padding: 6px 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-radius: 6px; }
+.ps-recent { margin-top: auto; }
+.ps-user { display: flex; align-items: center; gap: 10px; padding: 12px 8px 2px; }
+.ps-av { width: 28px; height: 28px; border-radius: 7px; background: #E6E6E4; font-size: 11.5px; font-weight: 600; color: #525252; display: flex; align-items: center; justify-content: center; }
+.ps-user span { font-size: 12.5px; }
+.ps-user svg { margin-left: auto; width: 15px; height: 15px; color: var(--p-muted); }
+
+/* Main card */
+.pm { position: relative; flex: 1; min-width: 0; margin: 8px 8px 8px 0; background: #fff; border: 1px solid var(--p-line); border-radius: 12px; overflow: hidden; }
+.pm-top { height: 46px; display: flex; align-items: center; gap: 14px; padding: 0 16px; border-bottom: 1px solid var(--p-line-2); }
+.pm-top svg { width: 17px; height: 17px; color: #737373; flex-shrink: 0; }
+.pm-div { width: 1px; height: 18px; background: var(--p-line); }
+.pm-title { position: relative; font-size: 13.5px; font-weight: 500; white-space: nowrap; }
+.pm-title b { font-weight: 500; position: absolute; left: 0; top: 0; }
+.pv { position: absolute; left: 0; right: 0; top: 46px; bottom: 0; }
+
+/* Chat home */
+.pc-hi { position: absolute; left: 0; right: 0; top: 150px; text-align: center; }
+.pc-hi .a { font-size: 14px; color: var(--p-muted); display: flex; align-items: center; justify-content: center; gap: 7px; }
+.pc-hi .a svg { width: 16px; height: 16px; }
+.pc-hi .b { font-size: 22px; font-weight: 600; margin-top: 6px; letter-spacing: -0.01em; }
+.pc-composer { position: absolute; left: 0; right: 0; bottom: 0; height: 112px; }
+.pc-box { position: relative; width: 668px; margin: 4px auto 0; min-height: 72px; border: 1px solid #E2E2E2; border-radius: 14px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 13px 54px 13px 14px; font-size: 13.5px; line-height: 1.45; color: #A3A3A3; }
+.pc-send { position: absolute; right: 10px; bottom: 10px; width: 30px; height: 30px; border-radius: 50%; background: rgba(62,158,149,0.5); color: #fff; display: flex; align-items: center; justify-content: center; }
+.pc-send svg { width: 15px; height: 15px; stroke-width: 2.4; }
+.pc-disc { text-align: center; font-size: 11px; color: var(--p-muted); margin-top: 8px; }
+
+/* Dashboards */
+.db { position: absolute; inset: 0; padding: 22px 24px; }
+.db-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.db-h1 { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
+.db-sub { font-size: 13px; color: #525252; margin-top: 4px; }
+.pk-wrap { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.pk { position: relative; display: flex; align-items: stretch; border: 1px solid #E6E6E6; border-radius: 10px; background: #fff; }
+.pk > div { padding: 6px 12px; }
+.pk .vw { background: rgba(62,158,149,0.10); border-radius: 9px 0 0 9px; }
+.pk .vs { display: flex; align-items: center; padding: 0 9px; font-size: 11px; color: var(--p-muted); border-left: 1px solid #E6E6E6; border-right: 1px solid #E6E6E6; }
+.pk .cmp { width: 204px; border-radius: 0 9px 9px 0; }
+.pk .cmp.open { box-shadow: inset 0 0 0 1.5px #8FCFC8; }
+.pk .cmp.pressed { background: #F3F3F2; }
+.pk-l { display: block; font-size: 9.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--p-muted); }
+.pk .vw .pk-l { color: var(--p-teal-dk); }
+.pk-v { position: relative; display: block; font-size: 12.5px; font-weight: 500; white-space: nowrap; height: 18px; }
+.pk .cmp .pk-v > span { position: absolute; left: 0; top: 0; }
+.pk-v .ch { display: inline-flex; align-items: center; gap: 4px; }
+.pk-v .ch svg { width: 11px; height: 11px; color: var(--p-muted); }
+.pk-ref { font-size: 11px; color: var(--p-muted); }
+.pk-menu { position: absolute; right: 0; top: calc(100% + 6px); width: 262px; z-index: 6; background: #fff; border: 1px solid #E2E2E2; border-radius: 10px; box-shadow: 0 14px 32px -16px rgba(38,42,48,0.3); padding: 5px; }
+.pk-o { display: flex; justify-content: space-between; gap: 8px; padding: 7px 9px; border-radius: 7px; font-size: 12.5px; white-space: nowrap; }
+.pk-o span { font-size: 11px; color: var(--p-muted); }
+.pk-o.cur { background: #F5F5F5; }
+.pk-o.hl { background: rgba(62,158,149,0.10); color: var(--p-teal-dk); font-weight: 500; }
+
+.db-tabs { display: flex; gap: 22px; border-bottom: 1px solid #EFEFEF; margin-bottom: 16px; }
+.db-tab { font-size: 13px; padding: 8px 0; margin-bottom: -1px; color: var(--p-faint); border-bottom: 2px solid transparent; }
+.db-tab.on { color: var(--p-text); font-weight: 600; border-bottom-color: var(--p-text); }
+
+.kp { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; margin-bottom: 12px; }
+.k { position: relative; border: 1px solid #E6E6E6; border-radius: 12px; padding: 12px 14px; min-width: 0; height: 102px; background: #fff; }
+.k.hover { border-color: #8FCFC8; box-shadow: 0 0 0 2px rgba(62,158,149,0.12); }
+.k-l { font-size: 12px; color: var(--p-muted); white-space: nowrap; }
+.k-v { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; margin: 5px 0 8px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.k-d { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--p-muted); white-space: nowrap; height: 20px; }
+.pill { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 999px; font-variant-numeric: tabular-nums; }
+.pill.up { background: rgba(0,226,170,0.18); color: var(--p-teal-dk); }
+.pill.down { background: var(--p-down-bg); color: var(--p-down); }
+.pill svg { width: 10px; height: 10px; stroke-width: 2.6; }
+.k-ask { position: absolute; right: 10px; bottom: 11px; display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 999px; background: var(--p-teal); color: #fff; font-size: 11.5px; font-weight: 600; white-space: nowrap; }
+.k-ask svg { width: 12px; height: 12px; }
+.k-ask.pressed { filter: brightness(0.86); }
+
+.cs { display: grid; grid-template-columns: minmax(0,1.25fr) minmax(0,1fr); gap: 10px; }
+.c { position: relative; border: 1px solid #E6E6E6; border-radius: 12px; padding: 12px 14px 10px; min-width: 0; background: #fff; }
+.c-h { display: flex; align-items: center; justify-content: space-between; gap: 10px; height: 26px; }
+.c-t { font-size: 13px; font-weight: 600; }
+.c-x { display: flex; align-items: center; gap: 4px; }
+.c-ib { width: 26px; height: 26px; border-radius: 7px; display: flex; align-items: center; justify-content: center; color: var(--p-muted); }
+.c-ib svg { width: 15px; height: 15px; }
+.c-ib.on { background: #F0F0EF; color: var(--p-text); }
+.c-ib.pressed { background: #E6E6E4; }
+.c-svg { display: block; margin-top: 6px; }
+.c-lg { display: flex; justify-content: center; gap: 16px; font-size: 11px; color: var(--p-muted); margin-top: 4px; height: 16px; }
+.c-lg span { display: inline-flex; align-items: center; gap: 6px; }
+.c-lg i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; background: var(--p-teal); }
+.c-lg i.dash { background: repeating-linear-gradient(90deg, #A3A3A3 0 4px, transparent 4px 7px); }
+.c-lg i.grey { background: #D6D3D1; height: 8px; width: 10px; border-radius: 2px; }
+.ex { position: absolute; right: 12px; top: 42px; width: 220px; z-index: 6; background: #fff; border: 1px solid #E2E2E2; border-radius: 10px; box-shadow: 0 14px 32px -16px rgba(38,42,48,0.3); padding: 5px; }
+.ex-o { position: relative; display: flex; align-items: center; gap: 9px; padding: 8px 9px; border-radius: 7px; font-size: 12.5px; white-space: nowrap; height: 34px; }
+.ex-o svg { width: 14px; height: 14px; color: var(--p-muted); flex-shrink: 0; }
+.ex-o .s { margin-left: auto; font-size: 11px; color: var(--p-muted); }
+.ex-o.hl { background: rgba(62,158,149,0.10); }
+.ex-o .done { position: absolute; inset: 0; display: flex; align-items: center; gap: 9px; padding: 0 9px; border-radius: 7px; background: #DDF6EE; color: var(--p-teal-dk); font-weight: 600; }
+.ex-o .done svg { color: var(--p-teal-dk); }
+
+/* Ask Lexi panel */
+.ap { position: absolute; top: 0; right: 0; bottom: 0; width: 404px; z-index: 8; display: none; flex-direction: column; background: #fff; border-left: 1px solid var(--p-line); box-shadow: -22px 0 44px -34px rgba(38,42,48,0.5); }
+.ap-h { height: 46px; display: flex; align-items: center; gap: 9px; padding: 0 14px 0 16px; border-bottom: 1px solid var(--p-line-2); flex-shrink: 0; }
+.ap-h > svg { width: 18px; height: 18px; flex-shrink: 0; }
+.ap-t { font-size: 13.5px; font-weight: 600; flex: 1; }
+.ap-x { width: 15px; height: 15px; color: var(--p-muted); }
+.ap-b { position: relative; flex: 1; min-height: 0; overflow: hidden; padding: 14px 16px; }
+.ap-ctx { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--p-muted); background: #F5F5F5; border: 1px solid #E6E6E6; border-radius: 999px; padding: 3px 10px; margin-bottom: 12px; white-space: nowrap; }
+.ap-ctx svg { width: 12px; height: 12px; }
+.ap-ctx b { font-weight: 600; color: var(--p-text); }
+.ap-u { display: flex; justify-content: flex-end; margin-bottom: 12px; }
+.ap-bub { max-width: 330px; background: #fff; border: 1px solid #E4E4E4; border-radius: 14px; padding: 9px 14px; font-size: 13.5px; line-height: 1.5; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+.ap-lx { display: flex; align-items: center; height: 20px; margin-bottom: 8px; }
+.ap-lx svg { width: 18px; height: 18px; display: block; }
+.ap-st { display: flex; align-items: center; gap: 8px; border: 1px solid #E4E4E4; border-radius: 8px; padding: 6px 11px; height: 30px; font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; color: var(--p-teal-dk); margin-bottom: 10px; }
+.ap-st i { width: 6px; height: 6px; border-radius: 50%; background: #34D399; }
+.ap-st svg { margin-left: auto; width: 13px; height: 13px; color: #737373; }
+.ap-p { font-size: 13.5px; line-height: 1.55; margin-bottom: 12px; }
+.ap-p b { font-weight: 600; }
+.ap-tb { border: 1px solid #E6E6E6; border-radius: 10px; overflow: hidden; margin-bottom: 12px; }
+.ap-r { display: grid; grid-template-columns: minmax(0,1fr) 70px 70px 56px; gap: 8px; align-items: center; height: 38px; padding: 0 12px; border-top: 1px solid #F1F1F1; font-size: 12.5px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ap-r.h { border-top: none; background: #FAFAFA; height: 32px; font-size: 11.5px; font-weight: 600; color: var(--p-muted); }
+.ap-r > span:nth-child(n+2) { text-align: right; }
+.ap-r .now { font-weight: 600; }
+.ap-r .pill { justify-self: end; }
+.ap-nx { display: inline-flex; align-items: center; gap: 8px; border: 1.5px solid var(--p-teal); border-radius: 10px; padding: 9px 12px; font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+.ap-nx span.ic { width: 22px; height: 22px; border-radius: 6px; background: rgba(62,158,149,0.12); color: var(--p-teal-dk); display: flex; align-items: center; justify-content: center; }
+.ap-nx span.ic svg { width: 13px; height: 13px; }
+
+.lf-cursor { position: absolute; left: 0; top: 0; width: 22px; height: 22px; margin: -3px 0 0 -4px; pointer-events: none; z-index: 50; filter: drop-shadow(0 2px 3px rgba(58,64,91,0.3)); }
+.lf-cursor svg { position: relative; display: block; }
+.lf-ripple { position: absolute; left: 4px; top: 3px; width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 50%; background: rgba(0,190,183,0.35); opacity: 0; }
+
+@media (max-width: 600px) { .lf-frame { border-radius: 10px; } }
+</style>
+</head>
+<body>
+
+<div class="lf" id="lf">
+  <div class="lf-frame" id="lf-frame" role="img" aria-label="Animated walkthrough: opening Lexi dashboards, comparing last week with the week before, exporting a chart for slides, and asking Lexi why average order value dropped">
+    <div class="lf-canvas" id="lf-canvas"><div class="lf-cam" id="lf-cam"></div></div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   LEXI DASHBOARDS: WEBSITE EMBED FOR /platform/reporting (Oct 2026)
+   "Watch a dashboard answer the next question". Beats: open Dashboards,
+   compare last week with the week before, export a chart for slides, ask
+   Lexi why average order value dropped.
+   Product only: no player, captions or cards. Loops; a click pauses it.
+   All copy and data live in FILM. Edit there.
+   ══════════════════════════════════════════════════════════════════════════ */
+var FILM = {
+  id: 'lexi-dashboards-web',
+  loopHoldMs: 2400,                    // pause on the final frame before the film loops
+  workspace: { name: 'Fitness Co', handle: 'fitness-co' },
+  user: { initials: 'ST', name: 'Sam Taylor' },
+  pinned: ['Improving Customer Retention'],
+  recent: ['Lapsing VIP Members Segment', 'Winter Range Sell-Through', 'Full-Price Loyalists Review', 'Second Order Conversion', 'Store Performance by Region'],
+  greeting: 'How can I help you today?',
+  placeholder: 'Try: Analyse my best customers in the last 30 days',
+
+  page: { title: 'Dashboards', sub: 'Sales and segment performance on your resolved customers.', refreshed: 'Refreshed 2 hours ago' },
+  tabs: ['Sales performance', 'Segment performance'],
+  viewing: ['Viewing', 'Last week · 19 to 25 Oct'],
+  compareLabel: 'Compared to',
+  compareNone: 'None',
+  compareOptions: [
+    // label, dates (first option is the one the cursor picks)
+    ['Previous week', '12 to 18 Oct'],
+    ['Same week last year', '20 to 26 Oct 2025'],
+    ['Black Friday last year', '28 Nov to 1 Dec']
+  ],
+  // label, value now, value before, format ('$k' money, 'n' count, '$' money, '%' percent), delta text, direction
+  kpis: [
+    ['Revenue', 1280192, 1254100, '$m', '+2.1%', 'up'],
+    ['Orders', 9640, 8877, 'n', '+8.6%', 'up'],
+    ['Avg order value', 132.80, 141.30, '$', '−6.0%', 'down'],
+    ['New customer %', 18.4, 19.6, '%', '−1.2 pts', 'down']
+  ],
+  askOn: 2,                            // which KPI card the cursor asks about
+  revenueChart: {
+    title: 'Revenue over time',
+    days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    now: [168, 174, 159, 181, 192, 214, 192],      // $k per day, last week
+    before: [171, 165, 170, 176, 183, 200, 189],   // $k per day, the week before
+    min: 140, max: 230
+  },
+  channelChart: {
+    title: 'Orders by channel',
+    rows: [['Online', 4210, 3720], ['Stores', 5430, 5157]],
+    max: 6000
+  },
+  exportOptions: [['Download CSV', 'Data'], ['Download PNG', 'For slides']],
+  exportDone: 'Revenue over time.png',
+
+  // Ask Lexi why
+  askButton: 'Ask Lexi why',
+  askTitle: 'Ask Lexi',
+  askContext: 'Avg order value, last week',
+  askPrompt: 'Why did average spend drop last week?',
+  askSteps: 3,
+  askAnswer: 'Average order value fell <b>6%</b> because customers bought fewer items per order. Price per item went up, so it’s basket size, not discounting. Most of the drop is in footwear orders.',
+  askTable: {
+    head: ['', 'Before', 'Last week', ''],
+    rows: [
+      // label, before, now, format, change, direction
+      ['Items per order', 2.40, 2.10, 'x', '−0.3', 'down'],
+      ['Price per item', 58.90, 63.20, '$', '+7%', 'up']
+    ]
+  },
+  askNext: 'Build a segment of single-item footwear buyers'
+};
+
+(function () {
+  'use strict';
+
+  /* ── Timeline (ms). Every frame is a pure function of t. ── */
+  var T = {
+    navClick: 1200, view: 1300, kpis: 1400, countA: 1500, countB: 2500, lineA: 1700, lineB: 2900,
+    cmpClick: 3900, menu: 4000, optClick: 4800, cmp: 5000, cmpLineB: 6200, deltas: 5300,
+    expClick: 8100, exMenu: 8200, pngClick: 8900, exOut: 9750,
+    hover: 10300, askBtn: 10400, askClick: 11100, panel: 11200,
+    bubble: 11800, stepsA: 12100, stepsB: 13400, ans: 13500, rows: [13900, 14150], rowA: 14100, rowB: 14900, next: 15200,
+    total: 17600
+  };
+  var CURSOR = [
+    { at: 300, dur: 850, to: '#ps-dash', click: T.navClick },
+    { at: 3000, dur: 850, to: '#pk-cmp', click: T.cmpClick },
+    { at: 4150, dur: 600, to: '#pk-o0', click: T.optClick },
+    { at: 7100, dur: 950, to: '#ch-exp', fx: 0.5, click: T.expClick },
+    { at: 8300, dur: 550, to: '#ex-o1', click: T.pngClick },
+    { at: 9600, dur: 700, to: '#k' + FILM.askOn, fx: 0.42, click: null },   // hover the card
+    { at: 10500, dur: 550, to: '#k-ask', fx: 0.5, click: T.askClick },
+    { at: 12000, dur: 900, to: '#ap-b', fx: 0.97, click: null }
+  ];
+  var CAM = [
+    // One push in, then the camera holds: picker, KPIs, the chart's download menu and the Lexi panel all sit in this framing
+    { at: 2900, dur: 1000, rect: { x: 800, y: 66, w: 376, h: 220 }, k: 1.2 }
+  ];
+
+  /* ── Helpers ── */
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function ease(p) { return p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; }
+  function eo(p) { return 1 - Math.pow(1 - p, 3); }
+  function prog(t, a, b) { return clamp((t - a) / (b - a), 0, 1); }
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+  function clarity() { try { if (window.clarity) window.clarity.apply(null, arguments); } catch (e) {} }
+  function cev(name) { clarity('event', FILM.id + '_' + name); }
+  clarity('set', 'film', FILM.id);
+  function fmt(v, f) {
+    if (f === '$m') return '$' + (v / 1e6).toFixed(2) + 'M';
+    if (f === 'n') return Math.round(v).toLocaleString('en-AU');
+    if (f === '$') return '$' + v.toFixed(2);
+    if (f === '%') return v.toFixed(1) + '%';
+    if (f === 'x') return v.toFixed(1);
+    return String(v);
+  }
+
+  var SVG = function (p, sw) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (sw || 1.8) + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + '</svg>'; };
+  var I = {
+    panel: SVG('<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/>'),
+    store: SVG('<path d="M5 8h14l-1 12H6Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>'),
+    updown: SVG('<path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>'),
+    plus: SVG('<path d="M12 5v14"/><path d="M5 12h14"/>'),
+    users: SVG('<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>'),
+    radio: SVG('<path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"/>'),
+    grid: SVG('<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>'),
+    chev: SVG('<path d="m6 9 6 6 6-6"/>'),
+    up: SVG('<path d="M12 19V5"/><path d="m5 12 7-7 7 7"/>'),
+    arrUp: SVG('<path d="M12 19V5"/><path d="m6 11 6-6 6 6"/>'),
+    arrDown: SVG('<path d="M12 5v14"/><path d="m6 13 6 6 6-6"/>'),
+    check: SVG('<path d="M20 6 9 17l-5-5"/>', 2.4),
+    download: SVG('<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/>'),
+    expand: SVG('<path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="m21 3-7 7"/><path d="m3 21 7-7"/>'),
+    table: SVG('<path d="M12 3v18"/><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/>'),
+    image: SVG('<rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/>'),
+    x: SVG('<path d="M18 6 6 18"/><path d="m6 6 12 12"/>'),
+    chart: SVG('<path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/>'),
+    lexi: '<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7" fill="none" stroke="#FF329D" stroke-width="2.6"/></svg>'
+  };
+
+  /* ── Charts (static SVG; reveals are clip widths driven by t) ── */
+  var RC = FILM.revenueChart, CC = FILM.channelChart;
+  var LW = 470, LH = 176, L = { l: 38, r: 10, t: 10, b: 22 };
+  function lx(i) { return L.l + (LW - L.l - L.r) * i / (RC.days.length - 1); }
+  function ly(v) { return L.t + (LH - L.t - L.b) * (1 - (v - RC.min) / (RC.max - RC.min)); }
+  function path(vals) { return vals.map(function (v, i) { return (i ? 'L' : 'M') + lx(i).toFixed(1) + ' ' + ly(v).toFixed(1); }).join(' '); }
+  function lineChart() {
+    var g = '';
+    [140, 170, 200, 230].forEach(function (v) {
+      g += '<line x1="' + L.l + '" x2="' + (LW - L.r) + '" y1="' + ly(v).toFixed(1) + '" y2="' + ly(v).toFixed(1) + '" stroke="#EFEFEF"/>' +
+        '<text x="' + (L.l - 8) + '" y="' + (ly(v) + 3.5).toFixed(1) + '" text-anchor="end" font-size="10" fill="#A3A3A3">$' + v + 'k</text>';
+    });
+    RC.days.forEach(function (d, i) { g += '<text x="' + lx(i).toFixed(1) + '" y="' + (LH - 5) + '" text-anchor="middle" font-size="10" fill="#A3A3A3">' + d + '</text>'; });
+    var area = path(RC.now) + ' L' + lx(RC.days.length - 1).toFixed(1) + ' ' + (LH - L.b) + ' L' + L.l + ' ' + (LH - L.b) + ' Z';
+    return '<svg class="c-svg" width="' + LW + '" height="' + LH + '" viewBox="0 0 ' + LW + ' ' + LH + '" aria-hidden="true">' +
+      '<defs><clipPath id="clipNow"><rect id="clipNowR" x="0" y="0" width="0" height="' + LH + '"/></clipPath><clipPath id="clipBef"><rect id="clipBefR" x="0" y="0" width="0" height="' + LH + '"/></clipPath>' +
+      '<linearGradient id="gArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3E9E95" stop-opacity="0.16"/><stop offset="1" stop-color="#3E9E95" stop-opacity="0"/></linearGradient></defs>' +
+      g +
+      '<path d="' + path(RC.before) + '" fill="none" stroke="#A3A3A3" stroke-width="1.8" stroke-dasharray="4 3" clip-path="url(#clipBef)"/>' +
+      '<g clip-path="url(#clipNow)"><path d="' + area + '" fill="url(#gArea)"/><path d="' + path(RC.now) + '" fill="none" stroke="#3E9E95" stroke-width="2.2" stroke-linejoin="round"/>' +
+      RC.now.map(function (v, i) { return '<circle cx="' + lx(i).toFixed(1) + '" cy="' + ly(v).toFixed(1) + '" r="2.6" fill="#fff" stroke="#3E9E95" stroke-width="1.6"/>'; }).join('') + '</g>' +
+      '</svg>';
+  }
+  var BW = 360, BH = 176;
+  function barChart() {
+    var rowH = 52, top = 22, x0 = 64, w = BW - x0 - 54;
+    var s = '<svg class="c-svg" width="' + BW + '" height="' + BH + '" viewBox="0 0 ' + BW + ' ' + BH + '" aria-hidden="true">';
+    CC.rows.forEach(function (r, i) {
+      var y = top + i * (rowH + 18);
+      s += '<text x="0" y="' + (y + 16) + '" font-size="12" fill="#262A30">' + esc(r[0]) + '</text>' +
+        '<rect x="' + x0 + '" y="' + (y + 4) + '" width="' + w + '" height="16" rx="5" fill="#F3F3F2"/>' +
+        '<rect id="bn' + i + '" x="' + x0 + '" y="' + (y + 4) + '" width="0" height="16" rx="5" fill="#3E9E95"/>' +
+        '<text id="bv' + i + '" x="' + (BW) + '" y="' + (y + 16) + '" text-anchor="end" font-size="12" font-weight="600" fill="#262A30">0</text>' +
+        '<rect x="' + x0 + '" y="' + (y + 26) + '" width="' + w + '" height="8" rx="3" fill="#F7F7F6"/>' +
+        '<rect id="bb' + i + '" x="' + x0 + '" y="' + (y + 26) + '" width="0" height="8" rx="3" fill="#D6D3D1"/>' +
+        '<text id="bp' + i + '" x="' + (BW) + '" y="' + (y + 34) + '" text-anchor="end" font-size="10.5" fill="#A3A3A3">' + r[2].toLocaleString('en-AU') + '</text>';
+    });
+    return s + '</svg>';
+  }
+
+  /* ── Build the product ── */
+  var cam = $('#lf-cam'), K = FILM.kpis, AT = FILM.askTable;
+  cam.innerHTML =
+    '<div class="pw"><div class="pw-app">' +
+      '<aside class="ps">' +
+        '<div class="ps-ws"><span class="ps-ws-ic">' + I.store + '</span><span><span class="ps-ws-n">' + esc(FILM.workspace.name) + '</span><span class="ps-ws-h">' + esc(FILM.workspace.handle) + '</span></span>' + I.updown + '</div>' +
+        '<nav class="ps-nav">' +
+          '<div class="ps-link" id="ps-new"><span class="ps-new-ic">' + I.plus + '</span>New Chat</div>' +
+          '<div class="ps-link">' + I.users + 'Segments</div>' +
+          '<div class="ps-link">' + I.radio + 'Activations</div>' +
+          '<div class="ps-link" id="ps-dash">' + I.grid + 'Dashboards</div>' +
+        '</nav>' +
+        '<div class="ps-cap">Pinned Chats</div>' + FILM.pinned.map(function (c) { return '<div class="ps-item">' + esc(c) + '</div>'; }).join('') +
+        '<div class="ps-recent"><div class="ps-cap">Recent Chats</div>' + FILM.recent.map(function (c) { return '<div class="ps-item">' + esc(c) + '</div>'; }).join('') + '</div>' +
+        '<div class="ps-user"><span class="ps-av">' + esc(FILM.user.initials) + '</span><span>' + esc(FILM.user.name) + '</span>' + I.updown + '</div>' +
+      '</aside>' +
+      '<main class="pm">' +
+        '<div class="pm-top">' + I.panel + '<span class="pm-div"></span><span class="pm-title"><span id="pm-t1">New Chat</span><b id="pm-t2">' + esc(FILM.page.title) + '</b></span></div>' +
+        // Chat home
+        '<section class="pv" id="pv-chat">' +
+          '<div class="pc-hi"><div class="a">' + I.lexi + 'Hi ' + esc(FILM.user.name.split(' ')[0]) + '</div><div class="b">' + esc(FILM.greeting) + '</div></div>' +
+          '<div class="pc-composer"><div class="pc-box">' + esc(FILM.placeholder) + '<span class="pc-send">' + I.up + '</span></div><div class="pc-disc">Lexi is AI and can make mistakes. Verify important information.</div></div>' +
+        '</section>' +
+        // Dashboards
+        '<section class="pv" id="pv-dash"><div class="db">' +
+          '<div class="db-head" id="db-head"><div><div class="db-h1">' + esc(FILM.page.title) + '</div><div class="db-sub">' + esc(FILM.page.sub) + '</div></div>' +
+            '<div class="pk-wrap"><div class="pk" id="pk">' +
+              '<div class="vw"><span class="pk-l">' + esc(FILM.viewing[0]) + '</span><span class="pk-v"><span>' + esc(FILM.viewing[1]) + '</span></span></div>' +
+              '<div class="vs">vs</div>' +
+              '<div class="cmp" id="pk-cmp"><span class="pk-l">' + esc(FILM.compareLabel) + '</span><span class="pk-v"><span class="ch" id="pk-none">' + esc(FILM.compareNone) + I.chev + '</span><span class="ch" id="pk-set">' + esc(FILM.compareOptions[0][0]) + ' · ' + esc(FILM.compareOptions[0][1]) + '</span></span></div>' +
+              '<div class="pk-menu" id="pk-menu"><div class="pk-o cur">' + esc(FILM.compareNone) + '</div>' +
+                FILM.compareOptions.map(function (o, i) { return '<div class="pk-o" id="pk-o' + i + '">' + esc(o[0]) + '<span>' + esc(o[1]) + '</span></div>'; }).join('') + '</div>' +
+            '</div><span class="pk-ref">' + esc(FILM.page.refreshed) + '</span></div>' +
+          '</div>' +
+          '<div class="db-tabs" id="db-tabs">' + FILM.tabs.map(function (t, i) { return '<span class="db-tab' + (i ? '' : ' on') + '">' + esc(t) + '</span>'; }).join('') + '</div>' +
+          '<div class="kp">' + K.map(function (k, i) {
+            return '<div class="k" id="k' + i + '"><div class="k-l">' + esc(k[0]) + '</div><div class="k-v" id="kv' + i + '">' + fmt(0, k[3]) + '</div>' +
+              '<div class="k-d" id="kd' + i + '"><span class="pill ' + k[5] + '">' + (k[5] === 'up' ? I.arrUp : I.arrDown) + esc(k[4]) + '</span><span>vs ' + fmt(k[2], k[3]) + '</span></div>' +
+              (i === FILM.askOn ? '<span class="k-ask" id="k-ask">' + I.lexi.replace('stroke="#FF329D"', 'stroke="#fff"') + esc(FILM.askButton) + '</span>' : '') + '</div>';
+          }).join('') + '</div>' +
+          '<div class="cs">' +
+            '<div class="c" id="c0"><div class="c-h"><span class="c-t">' + esc(RC.title) + '</span><span class="c-x"><span class="c-ib" id="ch-exp">' + I.download + '</span><span class="c-ib">' + I.expand + '</span></span></div>' + lineChart() +
+              '<div class="c-lg"><span><i></i>Last week</span><span id="lg0"><i class="dash"></i>' + esc(FILM.compareOptions[0][0]) + '</span></div>' +
+              '<div class="ex" id="ex">' + FILM.exportOptions.map(function (o, i) {
+                return '<div class="ex-o" id="ex-o' + i + '">' + (i ? I.image : I.table) + esc(o[0]) + '<span class="s">' + esc(o[1]) + '</span>' + (i ? '<span class="done" id="ex-done">' + I.check + esc(FILM.exportDone) + '</span>' : '') + '</div>';
+              }).join('') + '</div>' +
+            '</div>' +
+            '<div class="c" id="c1"><div class="c-h"><span class="c-t">' + esc(CC.title) + '</span><span class="c-x"><span class="c-ib">' + I.download + '</span><span class="c-ib">' + I.expand + '</span></span></div>' + barChart() +
+              '<div class="c-lg"><span><i></i>Last week</span><span id="lg1"><i class="grey"></i>' + esc(FILM.compareOptions[0][0]) + '</span></div></div>' +
+          '</div>' +
+          // Ask Lexi panel
+          '<div class="ap" id="ap">' +
+            '<div class="ap-h">' + I.lexi + '<span class="ap-t">' + esc(FILM.askTitle) + '</span><span class="ap-x">' + I.x + '</span></div>' +
+            '<div class="ap-b" id="ap-b">' +
+              '<div class="ap-ctx" id="ap-ctx">' + I.chart + 'From <b>' + esc(FILM.askContext) + '</b></div>' +
+              '<div class="ap-u" id="ap-u"><div class="ap-bub">' + esc(FILM.askPrompt) + '</div></div>' +
+              '<div class="ap-lx" id="ap-lx"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.6" fill="none" stroke="#FF329D" stroke-width="2.8" id="ap-mb"/><circle cx="10" cy="10" r="7.6" fill="none" stroke="#FF329D" stroke-width="2.8" stroke-linecap="round" stroke-dasharray="14 34" id="ap-ma" transform="rotate(-90 10 10)"/></svg></div>' +
+              '<div class="ap-st" id="ap-st"><i id="ap-dot"></i><span id="ap-stt"></span>' + I.chev + '</div>' +
+              '<p class="ap-p" id="ap-p">' + FILM.askAnswer + '</p>' +
+              '<div class="ap-tb" id="ap-tb"><div class="ap-r h">' + AT.head.map(function (h) { return '<span>' + esc(h) + '</span>'; }).join('') + '</div>' +
+                AT.rows.map(function (r, i) {
+                  return '<div class="ap-r" id="ar' + i + '"><span>' + esc(r[0]) + '</span><span>' + (r[3] === '$' ? '$' + r[1].toFixed(2) : r[1].toFixed(1)) + '</span><span class="now" id="an' + i + '">' + (r[3] === '$' ? '$' + r[1].toFixed(2) : r[1].toFixed(1)) + '</span><span class="pill ' + r[5] + '" id="ap' + i + '">' + esc(r[4]) + '</span></div>';
+                }).join('') + '</div>' +
+              '<div class="ap-nx" id="ap-nx"><span class="ic">' + I.users + '</span>' + esc(FILM.askNext) + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div></section>' +
+      '</main>' +
+    '</div></div>' +
+    '<div class="lf-cursor" id="lf-cursor"><span class="lf-ripple" id="lf-ripple"></span><svg viewBox="0 0 24 24" width="22" height="22"><path d="M5 3l14 8.2-6.3 1.5L9.6 19z" fill="#3A405B" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>';
+
+  var el = {};
+  Array.prototype.forEach.call(cam.querySelectorAll('[id]'), function (n) { el[n.id] = n; });
+
+  function show(e, on, disp) { var d = on ? (disp || '') : 'none'; if (e.style.display !== d) e.style.display = d; }
+  function cls(e, c, on) { e.classList.toggle(c, !!on); }
+  function txt(e, v) { if (e.textContent !== v) e.textContent = v; }
+  // Fade-up reveal that keeps its space, so the layout never shifts. Nothing left behind once finished.
+  function reveal(e, t, at, dur, dy) {
+    var p = prog(t, at, at + (dur || 380));
+    e.style.visibility = p > 0 ? '' : 'hidden';
+    if (p >= 1 || p <= 0) { e.style.opacity = ''; e.style.transform = ''; return; }
+    var q = eo(p);
+    e.style.opacity = q.toFixed(3);
+    e.style.transform = 'translateY(' + ((1 - q) * (dy == null ? 6 : dy)).toFixed(2) + 'px)';
+  }
+  // A dropdown: fades in, then out
+  function pop(e, t, a, b) {
+    var pi = prog(t, a, a + 200), po = prog(t, b, b + 180), v = eo(pi) * (1 - po);
+    show(e, v > 0, 'block');
+    e.style.opacity = v >= 1 ? '' : v.toFixed(3);
+    e.style.transform = v >= 1 ? '' : 'translateY(' + ((1 - eo(pi)) * -4).toFixed(2) + 'px)';
+  }
+  function fade(e, t, a, b) { var p = prog(t, a, b); e.style.visibility = p > 0 ? '' : 'hidden'; e.style.opacity = p >= 1 ? '' : eo(p).toFixed(3); }
+  function pressedAt(t, at) { return at != null && t >= at && t < at + 180; }
+  function attr(e, k, v) { if (e.getAttribute(k) !== v) e.setAttribute(k, v); }
+
+  /* ── Scene ── */
+  function renderScene(t) {
+    var dash = t >= T.view;
+    show(el['pv-chat'], !dash); show(el['pv-dash'], dash);
+    cls(el['ps-new'], 'active', !dash);
+    cls(el['ps-dash'], 'active', dash);
+    cls(el['ps-dash'], 'pressed', pressedAt(t, T.navClick));
+    var tp = prog(t, T.view, T.view + 300);
+    el['pm-t1'].style.opacity = (1 - tp).toFixed(3); el['pm-t2'].style.opacity = tp.toFixed(3);
+    el['pm-t1'].style.visibility = tp >= 1 ? 'hidden' : '';
+    if (!dash) return;
+
+    reveal(el['db-head'], t, T.view, 300, 0); reveal(el['db-tabs'], t, T.view + 60, 300, 0);
+
+    // KPIs count up on load; deltas arrive with the comparison
+    K.forEach(function (k, i) {
+      reveal(el['k' + i], t, T.kpis + i * 70, 340, 6);
+      txt(el['kv' + i], fmt(k[1] * ease(prog(t, T.countA + i * 70, T.countB + i * 70)), k[3]));
+      fade(el['kd' + i], t, T.deltas + i * 120, T.deltas + i * 120 + 320);
+    });
+    reveal(el['c0'], t, T.kpis + 200, 380, 6); reveal(el['c1'], t, T.kpis + 270, 380, 6);
+
+    // Revenue line draws on load; the comparison line draws once a period is picked
+    attr(el['clipNowR'], 'width', (LW * ease(prog(t, T.lineA, T.lineB))).toFixed(1));
+    attr(el['clipBefR'], 'width', (LW * ease(prog(t, T.cmp, T.cmpLineB))).toFixed(1));
+    fade(el['lg0'], t, T.cmp, T.cmp + 300); fade(el['lg1'], t, T.cmp, T.cmp + 300);
+    CC.rows.forEach(function (r, i) {
+      var w = BW - 64 - 54, pn = ease(prog(t, T.lineA + i * 120, T.lineB + i * 120)), pb = ease(prog(t, T.cmp + i * 120, T.cmpLineB + i * 120));
+      attr(el['bn' + i], 'width', (w * r[1] / CC.max * pn).toFixed(1));
+      txt(el['bv' + i], Math.round(r[1] * pn).toLocaleString('en-AU'));
+      attr(el['bb' + i], 'width', (w * r[2] / CC.max * pb).toFixed(1));
+      el['bp' + i].style.opacity = pb > 0 ? (pb).toFixed(3) : '0';
+    });
+
+    // Compare dates
+    var menuOpen = t >= T.menu && t < T.optClick + 50;
+    cls(el['pk-cmp'], 'open', menuOpen);
+    cls(el['pk-cmp'], 'pressed', pressedAt(t, T.cmpClick));
+    pop(el['pk-menu'], t, T.menu, T.optClick + 50);
+    cls(el['pk-o0'], 'hl', t >= T.menu + 500);
+    var set = prog(t, T.optClick + 60, T.optClick + 300);
+    el['pk-none'].style.opacity = (1 - set).toFixed(3); el['pk-none'].style.visibility = set >= 1 ? 'hidden' : '';
+    el['pk-set'].style.opacity = set.toFixed(3); el['pk-set'].style.visibility = set > 0 ? '' : 'hidden';
+
+    // Export the chart for slides
+    cls(el['ch-exp'], 'on', t >= T.exMenu && t < T.exOut);
+    cls(el['ch-exp'], 'pressed', pressedAt(t, T.expClick));
+    pop(el['ex'], t, T.exMenu, T.exOut);
+    cls(el['ex-o1'], 'hl', t >= T.exMenu + 450 && t < T.pngClick);
+    fade(el['ex-done'], t, T.pngClick + 60, T.pngClick + 260);
+
+    // Ask Lexi why
+    var hov = t >= T.hover && t < T.panel + 300;
+    cls(el['k' + FILM.askOn], 'hover', hov);
+    var ab = prog(t, T.askBtn, T.askBtn + 220) * (1 - prog(t, T.panel + 200, T.panel + 400));
+    el['k-ask'].style.opacity = ab >= 1 ? '' : ab.toFixed(3); el['k-ask'].style.visibility = ab > 0 ? '' : 'hidden';
+    cls(el['k-ask'], 'pressed', pressedAt(t, T.askClick));
+    // The button takes the place of the comparison caption while it shows
+    var cap = el['kd' + FILM.askOn].lastChild, cv = 1 - prog(t, T.askBtn - 120, T.askBtn + 100) + prog(t, T.panel + 300, T.panel + 500);
+    cap.style.opacity = cv >= 1 ? '' : Math.max(0, cv).toFixed(3);
+    var pp = prog(t, T.panel, T.panel + 600);
+    show(el['ap'], pp > 0, 'flex');
+    el['ap'].style.transform = pp >= 1 ? '' : 'translateX(' + ((1 - eo(pp)) * 420).toFixed(1) + 'px)';
+    reveal(el['ap-ctx'], t, T.panel + 450, 320, 4);
+    reveal(el['ap-u'], t, T.bubble, 360);
+    reveal(el['ap-lx'], t, T.bubble + 200, 340);
+    var tracing = t < T.stepsB;
+    el['ap-mb'].setAttribute('stroke-opacity', tracing ? '0.22' : '1');
+    el['ap-ma'].style.display = tracing ? '' : 'none';
+    if (tracing) el['ap-ma'].setAttribute('transform', 'rotate(' + ((t - T.bubble) * 0.36 - 90).toFixed(1) + ' 10 10)');
+    reveal(el['ap-st'], t, T.stepsA, 340);
+    var n = Math.max(1, Math.round(FILM.askSteps * prog(t, T.stepsA, T.stepsB)));
+    txt(el['ap-stt'], n + (n === 1 ? ' STEP' : ' STEPS'));
+    el['ap-dot'].style.opacity = tracing ? (0.35 + 0.65 * (0.5 + 0.5 * Math.cos(t / 160))).toFixed(2) : '';
+    reveal(el['ap-p'], t, T.ans, 400);
+    reveal(el['ap-tb'], t, T.rows[0] - 150, 380, 6);
+    AT.rows.forEach(function (r, i) {
+      reveal(el['ar' + i], t, T.rows[i], 320, 4);
+      var v = r[1] + (r[2] - r[1]) * ease(prog(t, T.rowA + i * 150, T.rowB + i * 150));
+      txt(el['an' + i], r[3] === '$' ? '$' + v.toFixed(2) : v.toFixed(1));
+      fade(el['ap' + i], t, T.rowB + i * 150 - 100, T.rowB + i * 150 + 200);
+    });
+    reveal(el['ap-nx'], t, T.next, 380, 4);
+  }
+
+  /* ── Camera and cursor ── */
+  var W = 1184, H = 680;
+  var REDUCE = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function framing(kf) {
+    if (!kf.rect || REDUCE) return { k: 1, tx: 0, ty: 0 };
+    var r = kf.rect, k = Math.max(1, Math.min(kf.k || 1.5, W * 0.92 / r.w, H * 0.92 / r.h));
+    return { k: k, tx: clamp(W / 2 - k * (r.x + r.w / 2), W - k * W, 0), ty: clamp(H / 2 - k * (r.y + r.h / 2), H - k * H, 0) };
+  }
+  function renderCamera(t) {
+    var st = { k: 1, tx: 0, ty: 0 };
+    for (var i = 0; i < CAM.length; i++) {
+      var kf = CAM[i]; if (t < kf.at) break;
+      var e = ease(prog(t, kf.at, kf.at + kf.dur)), tg = framing(kf);
+      st = { k: st.k + (tg.k - st.k) * e, tx: st.tx + (tg.tx - st.tx) * e, ty: st.ty + (tg.ty - st.ty) * e };
+    }
+    cam.style.transform = (st.k === 1 && !st.tx && !st.ty) ? '' : 'translate(' + st.tx.toFixed(2) + 'px,' + st.ty.toFixed(2) + 'px) scale(' + st.k.toFixed(4) + ')';
+  }
+  function offIn(e, root) { var x = 0, y = 0, n = e; while (n && n !== root) { x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent; } return n === root ? { x: x, y: y, w: e.offsetWidth, h: e.offsetHeight } : null; }
+  // Targets are measured as they sit at rest (menus and panels included), so the cursor lands true
+  var restPts = {};
+  function pointOf(sel, fx) {
+    var key = sel + (fx || '');
+    if (restPts[key]) return restPts[key];
+    var e = $(sel, cam); if (!e) return null;
+    var hidden = [], n = e;
+    while (n && n !== cam) { if (n.style && n.style.display === 'none') { hidden.push([n, n.style.display]); n.style.display = n.classList.contains('ap') ? 'flex' : 'block'; } n = n.parentNode; }
+    var tr = [];
+    n = e; while (n && n !== cam) { if (n.style && n.style.transform) { tr.push([n, n.style.transform]); n.style.transform = ''; } n = n.parentNode; }
+    var r = offIn(e, cam);
+    hidden.forEach(function (h) { h[0].style.display = h[1]; });
+    tr.forEach(function (h) { h[0].style.transform = h[1]; });
+    if (!r || !r.w) return null;
+    restPts[key] = { x: r.x + (fx != null ? r.w * fx : Math.min(r.w * 0.5, 46)), y: r.y + r.h * 0.55 };
+    return restPts[key];
+  }
+  function renderCursor(t) {
+    var c = el['lf-cursor'], prev = { x: 760, y: 560 }, pos = prev, click = null;
+    if (t < CURSOR[0].at - 200) { c.style.opacity = 0; return; }
+    for (var i = 0; i < CURSOR.length; i++) {
+      var w = CURSOR[i];
+      if (t < w.at) { pos = prev; break; }
+      var tg = pointOf(w.to, w.fx) || prev;
+      var e = ease(prog(t, w.at, w.at + w.dur));
+      pos = { x: prev.x + (tg.x - prev.x) * e, y: prev.y + (tg.y - prev.y) * e };
+      if (w.click != null && t >= w.click && t < w.click + 450) click = (t - w.click) / 450;
+      prev = tg;
+    }
+    c.style.opacity = clamp((t - CURSOR[0].at + 200) / 200, 0, 1).toFixed(2);
+    c.style.transform = 'translate(' + pos.x.toFixed(1) + 'px,' + pos.y.toFixed(1) + 'px)';
+    var rp = el['lf-ripple'];
+    if (click == null) rp.style.opacity = 0; else { rp.style.opacity = (1 - click).toFixed(2); rp.style.transform = 'scale(' + (0.2 + 1.1 * ease(click)).toFixed(3) + ')'; }
+  }
+
+  /* ── Fit the 1184×680 canvas to the frame ── */
+  var frame = $('#lf-frame'), canvas = $('#lf-canvas');
+  function fit() { canvas.style.transform = 'scale(' + (frame.clientWidth / W).toFixed(5) + ')'; restPts = {}; }
+  fit();
+  if ('ResizeObserver' in window) new ResizeObserver(fit).observe(frame); else window.addEventListener('resize', fit);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { restPts = {}; });
+
+  /* ── Player: no visible controls. Loops; click to pause. ── */
+  var P = { t: 0, playing: false, started: false, last: 0, done: false, fadeIn: false };
+  function render() {
+    var t = Math.min(P.t, T.total);
+    renderScene(t); renderCamera(t); renderCursor(t);
+    var o = 1;
+    if (P.t > T.total + FILM.loopHoldMs - 450) o = 1 - prog(P.t, T.total + FILM.loopHoldMs - 450, T.total + FILM.loopHoldMs);
+    if (P.fadeIn) o = Math.min(o, prog(P.t, 0, 450));
+    frame.style.opacity = o >= 1 ? '' : o.toFixed(3);
+  }
+  function loop(now) {
+    if (P.playing) {
+      P.t += Math.min(now - P.last, 80);
+      if (P.t >= T.total && !P.done) { P.done = true; cev('complete'); }
+      if (P.t >= T.total + FILM.loopHoldMs) { P.t = 0; P.done = false; P.fadeIn = true; }
+      if (P.fadeIn && P.t > 500) P.fadeIn = false;
+    }
+    P.last = now; render();
+    requestAnimationFrame(loop);
+  }
+  function play() { P.playing = true; P.started = true; }
+  function pause() { P.playing = false; }
+  function seek(t) { P.t = clamp(t, 0, T.total); P.fadeIn = false; render(); }
+  frame.addEventListener('pointerdown', function () { if (P.playing) { pause(); cev('pause'); } else { play(); cev('play'); } });
+
+  window.LexiFilm = { seek: function (t) { P.playing = false; seek(t); }, total: T.total, play: play, pause: pause };
+
+  /* ── Start: frame 0, autoplay once on screen. Reduced motion shows the final frame, still. ── */
+  seek(0);
+  requestAnimationFrame(function (now) { P.last = now; requestAnimationFrame(loop); });
+  if (REDUCE) { seek(T.total); return; }
+  if (/[?&]noplay\b/.test(location.search)) return;
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) { es.forEach(function (en) { if (en.isIntersecting && en.intersectionRatio >= 0.4 && !P.started) { play(); cev('autoplay'); io.disconnect(); } }); }, { threshold: [0, 0.4, 0.7] });
+    io.observe(frame);
+  } else play();
+})();
+</script>
+</body>
+</html>
