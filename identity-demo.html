@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lexi Identity Resolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rubik:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="text/javascript">
+  (function(c,l,a,r,i,t,y){
+    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+  })(window, document, "clarity", "script", "xi25pzdtd9");
+</script>
+<style>
+/* Shell: transparent, so the cards sit on the page's own background */
+:root {
+  --teal: #00BEB7; --dark-teal: #087680; --navy: #3A405B; --fawn: #ECE8E5; --light-fawn: #F7F6F5; --dark-fawn: #A09891;
+  --p-text: #262A30; --p-muted: #737373; --p-faint: #A3A3A3; --p-teal: #3E9E95; --p-teal-dk: #2E7F78;
+  --k-email: #3E9E95; --k-mobile: #459FF6;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: transparent; }
+body { font-family: 'Rubik', system-ui, sans-serif; color: var(--navy); -webkit-font-smoothing: antialiased; }
+
+.lf { max-width: 1040px; margin: 0 auto; }
+.lf-frame { position: relative; width: 100%; aspect-ratio: 1184 / 680; overflow: hidden; background: transparent; isolation: isolate; cursor: pointer; }
+.lf-canvas { position: absolute; left: 0; top: 0; width: 1184px; height: 680px; transform-origin: 0 0; }
+.stg { position: absolute; inset: 0; font-family: 'Inter', system-ui, sans-serif; color: var(--p-text); }
+
+/* Status header */
+.hd { position: absolute; left: 92px; right: 92px; top: 44px; display: flex; align-items: center; gap: 12px; }
+.hd-ic { width: 34px; height: 34px; border-radius: 9px; background: var(--p-teal); color: #fff; display: flex; align-items: center; justify-content: center; }
+.hd-ic svg { width: 18px; height: 18px; }
+.hd-t { font-size: 15px; font-weight: 600; }
+.hd-s { font-size: 12.5px; color: var(--p-muted); margin-top: 1px; }
+.hd-st { margin-left: auto; position: relative; height: 30px; width: 260px; }
+.hd-st span { position: absolute; right: 0; top: 0; height: 30px; display: inline-flex; align-items: center; gap: 7px; padding: 0 13px; border-radius: 999px; font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+.hd-st .s0 { color: #5B5148; background: var(--light-fawn); border: 1px solid var(--fawn); }
+.hd-st .s1 { color: var(--p-teal-dk); background: rgba(62,158,149,0.12); }
+.hd-st .s2 { color: var(--p-teal-dk); background: rgba(0,226,170,0.18); }
+.hd-st svg { width: 13px; height: 13px; }
+
+/* Source record cards */
+.rc { position: absolute; top: 200px; width: 270px; background: #fff; border: 1px solid #E6E3E0; border-radius: 12px; box-shadow: 0 18px 40px -30px rgba(58,64,91,0.45); overflow: hidden; transform-origin: 50% 40%; }
+.rc-h { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid #F0EEEC; }
+.rc-ic { width: 30px; height: 30px; border-radius: 8px; background: var(--light-fawn); border: 1px solid var(--fawn); display: flex; align-items: center; justify-content: center; color: #6B625A; flex-shrink: 0; }
+.rc-ic svg { width: 16px; height: 16px; }
+.rc-t { font-size: 13.5px; font-weight: 600; }
+.rc-s { font-size: 11.5px; color: var(--p-muted); margin-top: 1px; }
+.rc-b { padding: 4px 14px 10px; }
+.fr { position: relative; display: flex; align-items: center; height: 38px; border-top: 1px solid #F5F3F1; font-size: 13px; }
+.fr:first-child { border-top: none; }
+.fr .k { width: 72px; flex-shrink: 0; font-size: 11.5px; color: var(--p-muted); }
+.fr .v { position: relative; padding: 3px 7px; margin-left: -7px; border-radius: 6px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.fr .v.none { color: #C2BCB6; }
+.fr .v b { font-weight: 600; }
+.ring { position: absolute; inset: 0; border-radius: 6px; opacity: 0; pointer-events: none; }
+.ring.e { background: rgba(62,158,149,0.14); box-shadow: inset 0 0 0 1.5px rgba(62,158,149,0.6); }
+.ring.m { background: rgba(69,159,246,0.12); box-shadow: inset 0 0 0 1.5px rgba(69,159,246,0.6); }
+
+/* Match connectors */
+svg.links { position: absolute; inset: 0; width: 1184px; height: 680px; overflow: visible; pointer-events: none; }
+.mlab { position: absolute; transform: translate(-50%, -100%); font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 999px; white-space: nowrap; color: #fff; }
+.mlab.e { background: var(--k-email); }
+.mlab.m { background: var(--k-mobile); }
+
+/* Unified profile */
+.pf { position: absolute; left: 352px; top: 118px; width: 480px; background: #fff; border: 1px solid #E6E3E0; border-radius: 14px; box-shadow: 0 26px 56px -34px rgba(58,64,91,0.5); overflow: hidden; }
+.pf-h { display: flex; align-items: center; gap: 13px; padding: 16px 18px; border-bottom: 1px solid #F0EEEC; }
+.pf-av { width: 46px; height: 46px; border-radius: 12px; background: var(--navy); color: #fff; font-size: 16px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.pf-n { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
+.pf-s { font-size: 12px; color: var(--p-muted); margin-top: 2px; display: flex; align-items: center; gap: 6px; }
+.pf-s svg { width: 13px; height: 13px; color: var(--p-teal); }
+.vip { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--p-teal-dk); background: rgba(0,226,170,0.18); border-radius: 999px; padding: 4px 11px; }
+.vip svg { width: 13px; height: 13px; }
+.pf-b { padding: 6px 18px 16px; }
+.pr { display: flex; align-items: center; min-height: 38px; border-top: 1px solid #F5F3F1; font-size: 13px; gap: 8px; }
+.pr:first-child { border-top: none; }
+.pr .k { width: 96px; flex-shrink: 0; font-size: 11.5px; color: var(--p-muted); }
+.chip { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 600; padding: 3px 9px; border-radius: 6px; background: var(--light-fawn); border: 1px solid var(--fawn); color: #4E4741; white-space: nowrap; }
+.chip svg { width: 12px; height: 12px; }
+.ltv { margin-top: 10px; padding: 14px; border: 1px solid #EEEBE8; border-radius: 10px; background: #FCFBFA; }
+.ltv-top { display: flex; align-items: baseline; gap: 8px; }
+.ltv-n { font-size: 30px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; min-width: 128px; }
+.ltv-l { font-size: 12.5px; color: var(--p-muted); }
+.ltv-was { margin-left: auto; font-size: 12px; color: var(--p-muted); }
+.bar { display: flex; height: 10px; border-radius: 999px; background: #EFECE9; overflow: hidden; margin-top: 10px; gap: 2px; }
+.bar i { display: block; height: 100%; width: 0; }
+.lg { display: flex; gap: 16px; margin-top: 8px; font-size: 11.5px; color: var(--p-muted); }
+.lg span { display: inline-flex; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; }
+.lg i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+.lg b { font-weight: 600; color: var(--p-text); }
+
+/* Lexi answer */
+.ax { position: absolute; left: 620px; top: 150px; width: 470px; }
+.ax-u { display: flex; justify-content: flex-end; margin-bottom: 14px; }
+.ax-b { max-width: 400px; background: #fff; border: 1px solid #E4E4E4; border-radius: 14px; padding: 11px 16px; font-size: 14.5px; line-height: 1.5; box-shadow: 0 10px 24px -20px rgba(58,64,91,0.4); }
+.ax-l { display: flex; align-items: center; gap: 8px; height: 24px; margin-bottom: 8px; }
+.ax-l svg { width: 20px; height: 20px; }
+.ax-st { display: flex; align-items: center; gap: 8px; border: 1px solid #E4E4E4; background: #fff; border-radius: 8px; padding: 7px 12px; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; color: var(--p-teal-dk); margin-bottom: 10px; }
+.ax-st i { width: 6px; height: 6px; border-radius: 50%; background: #34D399; }
+.ax-st .tm { margin-left: auto; letter-spacing: 0; font-size: 12.5px; font-weight: 500; color: var(--p-muted); }
+.ax-p { font-size: 14.5px; line-height: 1.55; }
+.ax-p b { font-weight: 600; }
+.ax-k { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 12px; background: #fff; border: 1px solid #E6E6E6; border-radius: 10px; padding: 12px; }
+.ax-k .l { font-size: 11.5px; color: var(--p-muted); }
+.ax-k .n { font-size: 20px; font-weight: 600; margin-top: 3px; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+
+<div class="lf" id="lf">
+  <div class="lf-frame" id="lf-frame" role="img" aria-label="Animated explainer: an online order, an in-store purchase and a loyalty account for the same shopper are matched on shared email and mobile, merged into one customer profile whose lifetime value adds up, then counted in a Lexi answer">
+    <div class="lf-canvas" id="lf-canvas"><div class="stg" id="stg"></div></div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   LEXI IDENTITY: WEBSITE EMBED FOR /platform/unification-and-id-resolution
+   "Watch three records become one customer": three records, matched, one
+   profile, true value, ask. No player, captions or cards. Loops; a click
+   pauses it. All copy and data live in FILM. Edit there.
+   ══════════════════════════════════════════════════════════════════════════ */
+var FILM = {
+  id: 'lexi-identity-web',
+  loopHoldMs: 2400,                    // pause on the final frame before the film loops
+  header: { title: 'Identity resolution', sub: 'Fitness Co' },
+  status: ['3 records, 3 customers?', 'Matching on email and mobile', '1 customer profile'],
+  // Rows line up across cards: Name, Email, Mobile, Customer ID, Spend. null = not captured
+  records: [
+    { icon: 'cart', title: 'Online order', sub: 'Online store', name: 'Jess Morgan', email: 'jess.morgan@gmail.com', mobile: null, id: 'WEB-20418', spend: 640, spendNote: '3 orders' },
+    { icon: 'store', title: 'In-store purchase', sub: 'POS, Richmond store', name: 'Jessica Morgan', email: 'jess.morgan@gmail.com', mobile: '0412 555 018', id: null, spend: 1180, spendNote: '7 visits' },
+    { icon: 'star', title: 'Loyalty account', sub: 'Fitness Co Rewards', name: 'Jess M.', email: null, mobile: '0412 555 018', id: 'FC-88213', spend: 420, spendNote: 'Points redeemed' }
+  ],
+  colors: ['#2E7F78', '#7CCFC6', '#B9BED1'],   // spend share in the profile bar, one per record
+  profile: { initials: 'JM', name: 'Jess Morgan', sub: 'One profile from 3 records', ids: 'WEB-20418 · FC-88213', channels: ['Online', 'In store', 'Loyalty'], vip: 'VIP', was: 'Largest single record: $1,180' },
+  question: 'How many of my customers buy both online and in person?',
+  answer: '<b><span id="ax-n">0</span> customers</b>, 22% of your active base. They spend 2.6 times more a year than customers who only use one channel.',
+  answerKpis: [['Cross-channel customers', '18,400'], ['Share of active base', '22%'], ['Spend vs single channel', '2.6×']],
+  answerCount: 18400
+};
+
+(function () {
+  'use strict';
+
+  /* ── Timeline (ms). Every frame is a pure function of t. ── */
+  var T = {
+    cards: [200, 420, 640], rows: 700,
+    matchE: 3000, lineE: [3250, 3800], matchM: 4400, lineM: [4650, 5200],
+    merge: 6500, mergeDur: 1000, profile: 7250, pfRows: 7450, ltv: [8700, 10100], vip: 10300,
+    ask: 12000, slide: 800, bubble: 12500, lexi: 12950, steps: 13350, ans: 13700, count: [13800, 14600], kpis: 14700,
+    total: 17400
+  };
+
+  /* ── Helpers ── */
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function ease(p) { return p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; }
+  function eo(p) { return 1 - Math.pow(1 - p, 3); }
+  function prog(t, a, b) { return clamp((t - a) / (b - a), 0, 1); }
+  function money(v) { return '$' + Math.round(v).toLocaleString('en-AU'); }
+  function n0(v) { return Math.round(v).toLocaleString('en-AU'); }
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+  function clarity() { try { if (window.clarity) window.clarity.apply(null, arguments); } catch (e) {} }
+  function cev(name) { clarity('event', FILM.id + '_' + name); }
+  clarity('set', 'film', FILM.id);
+
+  var SVG = function (p, sw) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (sw || 1.8) + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + '</svg>'; };
+  var I = {
+    users: SVG('<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>'),
+    merge: SVG('<path d="m8 6 4-4 4 4"/><path d="M12 2v10.3a4 4 0 0 1-1.172 2.872L4 22"/><path d="m20 22-5-5"/>'),
+    cart: SVG('<circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>'),
+    store: SVG('<path d="M5 8h14l-1 12H6Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>'),
+    star: SVG('<path d="M11.5 2.3a.5.5 0 0 1 1 0l2.3 4.7 5.2.8a.5.5 0 0 1 .3.9l-3.8 3.7.9 5.2a.5.5 0 0 1-.7.5L12 15.7l-4.7 2.4a.5.5 0 0 1-.7-.5l.9-5.2L3.7 8.7a.5.5 0 0 1 .3-.9l5.2-.8Z"/>'),
+    check: SVG('<path d="M20 6 9 17l-5-5"/>', 2.2),
+    link: SVG('<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>'),
+    crown: SVG('<path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7Z"/><path d="M5 20h14"/>')
+  };
+
+  /* ── Build ── */
+  var REC = FILM.records, PF = FILM.profile;
+  var X = [97, 457, 817], CWID = 270, W = 1184, H = 680;
+  function field(k, v, ring, id) {
+    return '<div class="fr"><span class="k">' + k + '</span><span class="v' + (v == null ? ' none' : '') + '" id="' + id + '">' + (ring ? '<span class="ring ' + ring + '" id="' + id + '-r"></span>' : '') + (v == null ? 'Not captured' : esc(v)) + '</span></div>';
+  }
+  var stg = $('#stg');
+  stg.innerHTML =
+    '<div class="hd" id="hd"><span class="hd-ic">' + I.users + '</span><span><div class="hd-t">' + esc(FILM.header.title) + '</div><div class="hd-s">' + esc(FILM.header.sub) + '</div></span>' +
+      '<span class="hd-st"><span class="s0" id="hs0">' + esc(FILM.status[0]) + '</span><span class="s1" id="hs1">' + I.link + esc(FILM.status[1]) + '</span><span class="s2" id="hs2">' + I.check + esc(FILM.status[2]) + '</span></span></div>' +
+    REC.map(function (r, i) {
+      return '<div class="rc" id="rc' + i + '" style="left:' + X[i] + 'px"><div class="rc-h"><span class="rc-ic">' + I[r.icon] + '</span><span><div class="rc-t">' + esc(r.title) + '</div><div class="rc-s">' + esc(r.sub) + '</div></span></div>' +
+        '<div class="rc-b" id="rb' + i + '">' +
+          field('Name', r.name, null, 'f' + i + 'n') +
+          field('Email', r.email, r.email ? 'e' : null, 'f' + i + 'e') +
+          field('Mobile', r.mobile, r.mobile ? 'm' : null, 'f' + i + 'm') +
+          field('Customer ID', r.id, null, 'f' + i + 'i') +
+          '<div class="fr"><span class="k">Spend</span><span class="v"><b>' + money(r.spend) + '</b>&nbsp;<span style="color:var(--p-muted)">' + esc(r.spendNote) + '</span></span></div>' +
+        '</div></div>';
+    }).join('') +
+    '<svg class="links" id="links"><path id="ln-e" fill="none" stroke="#3E9E95" stroke-width="2" stroke-dasharray="1 0"/><path id="ln-m" fill="none" stroke="#459FF6" stroke-width="2"/></svg>' +
+    '<span class="mlab e" id="lb-e">Same email</span><span class="mlab m" id="lb-m">Same mobile</span>' +
+    // Profile
+    '<div class="pf" id="pf"><div class="pf-h"><span class="pf-av">' + esc(PF.initials) + '</span><span><div class="pf-n">' + esc(PF.name) + '</div><div class="pf-s">' + I.merge + esc(PF.sub) + '</div></span><span class="vip" id="vip">' + I.crown + esc(PF.vip) + '</span></div>' +
+      '<div class="pf-b">' +
+        '<div class="pr" id="pr0"><span class="k">Email</span><span>' + esc(REC[0].email) + '</span></div>' +
+        '<div class="pr" id="pr1"><span class="k">Mobile</span><span>' + esc(REC[1].mobile) + '</span></div>' +
+        '<div class="pr" id="pr2"><span class="k">Customer IDs</span><span>' + esc(PF.ids) + '</span></div>' +
+        '<div class="pr" id="pr3"><span class="k">Channels</span>' + PF.channels.map(function (c, i) { return '<span class="chip">' + I[REC[i].icon] + esc(c) + '</span>'; }).join('') + '</div>' +
+        '<div class="ltv" id="ltv"><div class="ltv-top"><span class="ltv-n" id="ltv-n">$0</span><span class="ltv-l">lifetime value</span><span class="ltv-was">' + esc(PF.was) + '</span></div>' +
+          '<div class="bar">' + REC.map(function (r, i) { return '<i id="lb' + i + '" style="background:' + FILM.colors[i] + '"></i>'; }).join('') + '</div>' +
+          '<div class="lg">' + REC.map(function (r, i) { return '<span id="lg' + i + '"><i style="background:' + FILM.colors[i] + '"></i>' + esc(PF.channels[i]) + ' <b>' + money(r.spend) + '</b></span>'; }).join('') + '</div></div>' +
+      '</div></div>' +
+    // Lexi answer
+    '<div class="ax" id="ax">' +
+      '<div class="ax-u" id="ax-u"><div class="ax-b">' + esc(FILM.question) + '</div></div>' +
+      '<div class="ax-l" id="ax-l"><svg viewBox="0 0 20 20" aria-label="Lexi"><circle cx="10" cy="10" r="7.6" fill="none" stroke="#FF329D" stroke-width="2.8" id="mk-base"/><circle cx="10" cy="10" r="7.6" fill="none" stroke="#FF329D" stroke-width="2.8" stroke-linecap="round" stroke-dasharray="14 34" id="mk-arc" transform="rotate(-90 10 10)"/></svg></div>' +
+      '<div class="ax-st" id="ax-st"><i></i>3 STEPS<span class="tm">4s</span></div>' +
+      '<p class="ax-p" id="ax-p">' + FILM.answer + '</p>' +
+      '<div class="ax-k" id="ax-k">' + FILM.answerKpis.map(function (k) { return '<div><div class="l">' + esc(k[0]) + '</div><div class="n">' + esc(k[1]) + '</div></div>'; }).join('') + '</div>' +
+    '</div>';
+
+  var el = {};
+  Array.prototype.forEach.call(stg.querySelectorAll('[id]'), function (n) { el[n.id] = n; });
+  var total = REC.reduce(function (a, r) { return a + r.spend; }, 0);
+
+  function show(e, on, disp) { var d = on ? (disp || '') : 'none'; if (e.style.display !== d) e.style.display = d; }
+  function reveal(e, t, at, dur, dy) {
+    var p = prog(t, at, at + (dur || 380));
+    e.style.visibility = p > 0 ? '' : 'hidden';
+    if (p >= 1 || p <= 0) { e.style.opacity = ''; e.style.transform = ''; return; }
+    var q = eo(p);
+    e.style.opacity = q.toFixed(3);
+    e.style.transform = 'translateY(' + ((1 - q) * (dy == null ? 8 : dy)).toFixed(2) + 'px)';
+  }
+  function txt(e, v) { if (e.textContent !== v) e.textContent = v; }
+  function offIn(e) { var x = 0, y = 0, n = e; while (n && n !== stg) { x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent; } return { x: x, y: y, w: e.offsetWidth, h: e.offsetHeight }; }
+
+  // A connector between the same field in two neighbouring cards, drawn left to right
+  function link(t, key, a, b, at, lab) {
+    var A = offIn(el['f' + a + key]), B = offIn(el['f' + b + key]);
+    var x0 = X[a] + CWID, x1 = X[b], y0 = A.y + A.h / 2, y1 = B.y + B.h / 2;
+    var p = ease(prog(t, at[0], at[1])), fadeOut = 1 - prog(t, T.merge - 100, T.merge + 250);
+    var xe = x0 + (x1 - x0) * p;
+    var path = el['ln-' + key];
+    path.setAttribute('d', 'M' + x0 + ' ' + y0 + ' L' + xe.toFixed(1) + ' ' + (y0 + (y1 - y0) * p).toFixed(1));
+    path.style.opacity = p > 0 ? fadeOut.toFixed(3) : 0;
+    // End dots
+    var lb = el[lab];
+    lb.style.left = ((x0 + x1) / 2) + 'px'; lb.style.top = (y0 - 8) + 'px';
+    var lp = prog(t, at[1] - 150, at[1] + 200);
+    lb.style.opacity = (eo(lp) * fadeOut).toFixed(3);
+    lb.style.visibility = lp > 0 && fadeOut > 0 ? '' : 'hidden';
+  }
+
+  /* ── Scene ── */
+  function renderScene(t) {
+    // Header status: three states
+    var s1 = prog(t, T.matchE - 200, T.matchE + 100), s2 = prog(t, T.profile, T.profile + 300);
+    el['hs0'].style.opacity = (1 - s1).toFixed(3);
+    el['hs1'].style.opacity = (s1 * (1 - s2)).toFixed(3);
+    el['hs2'].style.opacity = s2.toFixed(3);
+    reveal(el['hd'], t, 0, 400, 4);
+
+    // Three records arrive, each a different system's view of the same shopper
+    var mp = ease(prog(t, T.merge, T.merge + T.mergeDur));
+    REC.forEach(function (r, i) {
+      var c = el['rc' + i], arrive = prog(t, T.cards[i], T.cards[i] + 450);
+      var dx = (592 - (X[i] + CWID / 2)) * mp, s = 1 - 0.1 * mp, o = Math.min(eo(arrive), 1 - (i === 1 ? prog(t, T.merge + 450, T.merge + T.mergeDur) : prog(t, T.merge + 50, T.merge + 550)));   // outer cards fold into the middle one
+      c.style.visibility = o > 0 ? '' : 'hidden';
+      c.style.opacity = o >= 1 ? '' : o.toFixed(3);
+      var dy = (1 - eo(arrive)) * 12;
+      c.style.transform = (dx || dy || s !== 1) ? 'translate(' + dx.toFixed(1) + 'px,' + dy.toFixed(1) + 'px) scale(' + s.toFixed(4) + ')' : '';
+      c.style.zIndex = i === 1 ? 2 : 1;
+    });
+
+    // Matched: the shared identifiers light up, then link across
+    var eOn = ease(prog(t, T.matchE, T.matchE + 300)), mOn = ease(prog(t, T.matchM, T.matchM + 300));
+    [0, 1].forEach(function (i) { el['f' + i + 'e-r'].style.opacity = eOn.toFixed(3); });
+    [1, 2].forEach(function (i) { el['f' + i + 'm-r'].style.opacity = mOn.toFixed(3); });
+    link(t, 'e', 0, 1, T.lineE, 'lb-e');
+    link(t, 'm', 1, 2, T.lineM, 'lb-m');
+
+    // One profile, then the true value adds up source by source
+    var askSlide = ease(prog(t, T.ask, T.ask + T.slide));
+    var pf = el['pf'], pp = prog(t, T.profile, T.profile + 550);
+    pf.style.visibility = pp > 0 ? '' : 'hidden';
+    pf.style.opacity = pp > 0 && pp < 1 ? eo(pp).toFixed(3) : '';
+    var pdx = -260 * askSlide, pdy = (1 - eo(pp)) * 14, ps = 0.96 + 0.04 * eo(pp);
+    pf.style.transform = (pdx || pdy || ps !== 1) ? 'translate(' + pdx.toFixed(1) + 'px,' + pdy.toFixed(1) + 'px) scale(' + ps.toFixed(4) + ')' : '';
+    [0, 1, 2, 3].forEach(function (i) { reveal(el['pr' + i], t, T.pfRows + i * 130, 340, 5); });
+    reveal(el['ltv'], t, T.pfRows + 520, 380, 6);
+    var span = (T.ltv[1] - T.ltv[0]) / REC.length, sum = 0;
+    REC.forEach(function (r, i) {
+      var f = ease(prog(t, T.ltv[0] + i * span, T.ltv[0] + (i + 1) * span));
+      sum += r.spend * f;
+      el['lb' + i].style.width = (r.spend / total * 100 * f).toFixed(2) + '%';
+      el['lg' + i].style.opacity = (0.35 + 0.65 * f).toFixed(3);
+    });
+    txt(el['ltv-n'], money(sum));
+    reveal(el['vip'], t, T.vip, 420, 0);
+
+    // Ask: the same customer, counted once, in a Lexi answer
+    var ax = el['ax'], ap = prog(t, T.ask + 300, T.ask + 300 + 500);
+    ax.style.visibility = ap > 0 ? '' : 'hidden';
+    reveal(el['ax-u'], t, T.bubble, 380);
+    reveal(el['ax-l'], t, T.lexi, 340);
+    var working = t < T.steps;
+    el['mk-base'].setAttribute('stroke-opacity', working ? '0.22' : '1');
+    el['mk-arc'].style.display = working ? '' : 'none';
+    if (working) el['mk-arc'].setAttribute('transform', 'rotate(' + ((t - T.lexi) * 0.36 - 90).toFixed(1) + ' 10 10)');
+    reveal(el['ax-st'], t, T.steps, 320, 4);
+    reveal(el['ax-p'], t, T.ans, 400);
+    var axn = document.getElementById('ax-n');
+    if (axn) txt(axn, n0(FILM.answerCount * ease(prog(t, T.count[0], T.count[1]))));
+    reveal(el['ax-k'], t, T.kpis, 400, 6);
+  }
+
+  /* ── Fit the 1184×680 canvas to the frame ── */
+  var frame = $('#lf-frame'), canvas = $('#lf-canvas');
+  function fit() { canvas.style.transform = 'scale(' + (frame.clientWidth / W).toFixed(5) + ')'; }
+  fit();
+  if ('ResizeObserver' in window) new ResizeObserver(fit).observe(frame); else window.addEventListener('resize', fit);
+
+  /* ── Player: no visible controls. Loops; click to pause. ── */
+  var P = { t: 0, playing: false, started: false, last: 0, done: false, fadeIn: false };
+  function render() {
+    var t = Math.min(P.t, T.total);
+    renderScene(t);
+    var o = 1;
+    if (P.t > T.total + FILM.loopHoldMs - 450) o = 1 - prog(P.t, T.total + FILM.loopHoldMs - 450, T.total + FILM.loopHoldMs);
+    if (P.fadeIn) o = Math.min(o, prog(P.t, 0, 450));
+    frame.style.opacity = o >= 1 ? '' : o.toFixed(3);
+  }
+  function loop(now) {
+    if (P.playing) {
+      P.t += Math.min(now - P.last, 80);
+      if (P.t >= T.total && !P.done) { P.done = true; cev('complete'); }
+      if (P.t >= T.total + FILM.loopHoldMs) { P.t = 0; P.done = false; P.fadeIn = true; }
+      if (P.fadeIn && P.t > 500) P.fadeIn = false;
+    }
+    P.last = now; render();
+    requestAnimationFrame(loop);
+  }
+  function play() { P.playing = true; P.started = true; }
+  function pause() { P.playing = false; }
+  function seek(t) { P.t = clamp(t, 0, T.total); P.fadeIn = false; render(); }
+  frame.addEventListener('pointerdown', function () { if (P.playing) { pause(); cev('pause'); } else { play(); cev('play'); } });
+
+  window.LexiFilm = { seek: function (t) { P.playing = false; seek(t); }, total: T.total, play: play, pause: pause };
+
+  /* ── Start: frame 0, autoplay once on screen. Reduced motion shows the final frame, still. ── */
+  var REDUCE = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  seek(0);
+  requestAnimationFrame(function (now) { P.last = now; requestAnimationFrame(loop); });
+  if (REDUCE) { seek(T.total); return; }
+  if (/[?&]noplay\b/.test(location.search)) return;
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) { es.forEach(function (en) { if (en.isIntersecting && en.intersectionRatio >= 0.4 && !P.started) { play(); cev('autoplay'); io.disconnect(); } }); }, { threshold: [0, 0.4, 0.7] });
+    io.observe(frame);
+  } else play();
+})();
+</script>
+</body>
+</html>
